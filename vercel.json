@@ -1,0 +1,12 @@
+{
+  "routes": [
+    {
+      "src": "/pages/(.*)",
+      "dest": "/pages/$1.html"
+    },
+    {
+      "src": "/",
+      "dest": "/pages/mock-login.html"
+    }
+  ]
+}
