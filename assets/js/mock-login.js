@@ -27,5 +27,14 @@ const loginAsLearner = () => {
 }
 
 const onLoginSuccessful = (err, result) => {
-  console.log(result.idToken)
+  if (err) {
+    console.error('[Authentication] Failed to authenticate user due to the following reason: ', err)
+    return
+  }
+
+  const { expiresIn, idToken } = result
+  const expireTimestamp = Date.now() + (expiresIn * 1000)
+
+  localStorage.setItem('idToken', idToken)
+  localStorage.setItem('tokenExpiry', expireTimestamp)
 }
