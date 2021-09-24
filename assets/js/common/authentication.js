@@ -7,7 +7,7 @@ const configureClient = async () => {
   return new auth0.WebAuth(config)
 }
 
-const isAuthenticated = async () => {
+const isAuthenticated = () => {
   const idToken = localStorage.getItem('idToken')
   if (!idToken) return false
 
@@ -19,6 +19,11 @@ const isAuthenticated = async () => {
   }
 
   return true
+}
+
+const ensureAuthenticated = () => {
+  if (isAuthenticated()) return
+  window.location.replace("/")
 }
 
 let auth0App = null
