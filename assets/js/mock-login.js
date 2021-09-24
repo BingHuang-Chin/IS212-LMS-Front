@@ -3,26 +3,22 @@
  * to mock the information prior to Azure SSO implementation
  */
 const loginAsHr = () => {
-  auth0App.client.login({
-    realm: "Username-Password-Authentication",
-    username: "hr@aio.com",
-    password: "Pass123$"
-  }, onLoginSuccessful)
+  userLogin("hr@aio.com", "Pass123$")
 }
 
 const loginAsTrainer = () => {
-  auth0App.client.login({
-    realm: "Username-Password-Authentication",
-    username: "trainer@aio.com",
-    password: "Pass123$"
-  }, onLoginSuccessful)
+  userLogin("trainer@aio.com", "Pass123$")
 }
 
 const loginAsLearner = () => {
+  userLogin("learner@aio.com", "Pass123$")
+}
+
+const userLogin = (email, password) => {
   auth0App.client.login({
+    password,
+    username: email,
     realm: "Username-Password-Authentication",
-    username: "learner@aio.com",
-    password: "Pass123$"
   }, onLoginSuccessful)
 }
 
@@ -37,4 +33,6 @@ const onLoginSuccessful = (err, result) => {
 
   localStorage.setItem('idToken', idToken)
   localStorage.setItem('tokenExpiry', expireTimestamp)
+
+  window.location.replace("/home")
 }
