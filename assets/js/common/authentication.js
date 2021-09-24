@@ -1,14 +1,14 @@
 const configureClient = async () => {
   const config = {
     domain: "dev-itjxnuny.us.auth0.com",
-    client_id: "MpioU9lYlzZpAeaRlAYkwYSurlECOpKM"
+    clientID: "MpioU9lYlzZpAeaRlAYkwYSurlECOpKM"
   }
 
-  return await createAuth0Client(config)
+  return new auth0.WebAuth(config)
 }
 
-let auth0 = null
+let auth0App = null
 
 $(document).ready(async () => {
-  auth0 = await configureClient()
+  auth0App = await configureClient()
 })
