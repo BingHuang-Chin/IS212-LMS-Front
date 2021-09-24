@@ -13,6 +13,8 @@ cd IS212-LMS-Back
 vercel dev
 ```
 
+Your application will be accessible at http://localhost:3000.
+
 # FAQ
 ## After running `vercel dev` I got some prompt.
 Login with the registered account in the previous step and follow their instructions in creating a project. Once done, you should be able to run the command again.
