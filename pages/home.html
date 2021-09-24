@@ -1,18 +1,79 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>LMS - AIO Learning Management System</title>
 
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.1/css/bootstrap.min.css" integrity="sha512-6KY5s6UI5J7SVYuZB4S/CZMyPylqyyNZco376NM2Z8Sb8OxEdp02e1jkKk/wZxIEmjQ6DRCEBhni+gpr9c4tvA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.1.1/flatly/bootstrap.min.css" integrity="sha512-A6eytCnxDsOtfv6WqcF+KeZitCIo1SE9CR7wy572XUNV3r2y/QG/CVWlf0zwHfoVrD6kctgnAA3KX4PpbOEp5w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.1/css/bootstrap.min.css"
+    integrity="sha512-6KY5s6UI5J7SVYuZB4S/CZMyPylqyyNZco376NM2Z8Sb8OxEdp02e1jkKk/wZxIEmjQ6DRCEBhni+gpr9c4tvA=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.1.1/flatly/bootstrap.min.css"
+    integrity="sha512-A6eytCnxDsOtfv6WqcF+KeZitCIo1SE9CR7wy572XUNV3r2y/QG/CVWlf0zwHfoVrD6kctgnAA3KX4PpbOEp5w=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <style>
+  </style>
 </head>
+
 <body>
   <!-- You body elements go here -->
+  <div class="row">
+    <div class="col-md-4" style="background-color:#ECF0F1; padding-top: 10%;">
+      <h2 class="text-center align-middle">Current courses created</h2>
+    </div>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.1/js/bootstrap.min.js" integrity="sha512-ewfXo9Gq53e1q1+WDTjaHAGZ8UvCWq0eXONhwDuIoaH8xz2r96uoAYaQCm1oQhnBfRXrvJztNXFsTloJfgbL5Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <div class="col-md-8" style="background-color:#7B8A8B;padding-top: 10%;">
+      <div >
+        <h2>Create Course</h2>
+        <div class="form-group mb-5 col-sm-7">
+          <label for="exampleFormControlInput1" class="form-label">Title</label>
+          <input type="text" class="form-control" id="course title" placeholder="Software Project Management">
+        </div>
+
+        <div class="form-group mb-5 col-sm-7">
+          <label for="exampleFormControlInput1" class="form-label">Description</label>
+          <textarea class="form-control" id="description" placeholder="" rows="3"></textarea>
+        </div>
+
+        <div class="form-group mb-5 col-sm-7">
+          <div class="row">
+            <div class="col-sm-6">
+              <label for="exampleFormControlInput1" class="form-label">Course start date</label>
+              <input type="date" class="form-control" id="course_start_date">
+            </div>
+            <div class="col-sm-6">
+              <label for="exampleFormControlInput1" class="form-label">Course end date</label>
+              <input type="date" class="form-control" id="course_end_date">
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-sm-6">
+              <label for="exampleFormControlInput1" class="form-label">Course start date</label>
+              <input type="date" class="form-control" id="enrolment_start_date">
+            </div>
+            <div class="col-sm-6">
+              <label for="exampleFormControlInput1" class="form-label">Course end date</label>
+              <input type="date" class="form-control" id="enrolment_end_date">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
+    integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.1/js/bootstrap.min.js"
+    integrity="sha512-ewfXo9Gq53e1q1+WDTjaHAGZ8UvCWq0eXONhwDuIoaH8xz2r96uoAYaQCm1oQhnBfRXrvJztNXFsTloJfgbL5Q=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </body>
+
 </html>
