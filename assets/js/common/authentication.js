@@ -26,6 +26,13 @@ const ensureAuthenticated = () => {
   window.location.replace("/")
 }
 
+const getIdToken = () => {
+  if (!isAuthenticated()) 
+    return null
+
+  return localStorage.getItem('idToken')
+}
+
 let auth0App = null
 
 $(document).ready(async () => {
