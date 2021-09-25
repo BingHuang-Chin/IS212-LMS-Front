@@ -156,8 +156,24 @@ const createQuiz = {
       })
     })
 
-    const responseJson = await response.json()
-    console.log(responseJson)
+    const { errors } = await response.json()
+    if (errors) {
+      Swal.fire({
+        title: 'Error!',
+        text: 'Quiz could not be created at this moment',
+        icon: 'error'
+      })
+      return
+    }
+
+    Swal.fire({
+      title: 'Quiz created!',
+      text: 'The quiz has been successfully created',
+      icon: 'success'
+    }).then(result => {
+      if (result.isDismissed || result.isConfirmed)
+        location.reload()
+    })
   },
 
   updateQuestionTypeTemplate: function () {
