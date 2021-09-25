@@ -15,52 +15,61 @@
     crossorigin="anonymous" referrerpolicy="no-referrer" />
 
   <style>
+    column {
+      height: 100%;
+    }
   </style>
 </head>
 
-<body>
+<body class="vw-100 vh-100">
   <!-- You body elements go here -->
-  <div class="row">
+  <div class="row vw-100 vh-100">
     <div class="col-md-4" style="background-color:#ECF0F1; padding-top: 10%;">
       <h2 class="text-center align-middle">Current courses created</h2>
     </div>
 
     <div class="col-md-8" style="background-color:#7B8A8B;padding-top: 10%;">
-      <div >
-        <h2>Create Course</h2>
-        <div class="form-group mb-5 col-sm-7">
-          <label for="exampleFormControlInput1" class="form-label">Title</label>
-          <input type="text" class="form-control" id="course title" placeholder="Software Project Management">
+      <div class="container">
+      <h2>Create Course</h2>
+      <form class="needs-validation" novalidate>
+        <div class="mb-5 col-sm-7">
+          <label for="course_title" class="form-label">Title</label>
+          <input type="text" class="form-control" id="course_title" placeholder="Software Project Management" required>
         </div>
 
-        <div class="form-group mb-5 col-sm-7">
-          <label for="exampleFormControlInput1" class="form-label">Description</label>
-          <textarea class="form-control" id="description" placeholder="" rows="3"></textarea>
+        <div class="mb-5 col-sm-7">
+          <label for="course_description" class="form-label">Description</label>
+          <textarea class="form-control" id="description" placeholder="" rows="3" required></textarea>
         </div>
 
-        <div class="form-group mb-5 col-sm-7">
+        <div class="mb-5 col-sm-7">
           <div class="row">
             <div class="col-sm-6">
-              <label for="exampleFormControlInput1" class="form-label">Course start date</label>
-              <input type="date" class="form-control" id="course_start_date">
+              <label for="course_start_date" class="form-label">Course start date</label>
+              <input type="date" class="form-control" id="course_start_date" required>
             </div>
             <div class="col-sm-6">
-              <label for="exampleFormControlInput1" class="form-label">Course end date</label>
-              <input type="date" class="form-control" id="course_end_date">
+              <label for="course_end_date" class="form-label">Course end date</label>
+              <input type="date" class="form-control" id="course_end_date" required>
             </div>
           </div>
 
           <div class="row">
             <div class="col-sm-6">
-              <label for="exampleFormControlInput1" class="form-label">Course start date</label>
-              <input type="date" class="form-control" id="enrolment_start_date">
+              <label for="enrolment_start_date" class="form-label">Course start date</label>
+              <input type="date" class="form-control" id="enrolment_start_date" required>
             </div>
             <div class="col-sm-6">
-              <label for="exampleFormControlInput1" class="form-label">Course end date</label>
-              <input type="date" class="form-control" id="enrolment_end_date">
+              <label for="enrolment_end_date" class="form-label">Course end date</label>
+              <input type="date" class="form-control" id="enrolment_end_date" required>
             </div>
           </div>
         </div>
+
+        <button class="btn btn-info" float-right type="submit" id="submit">Add</button>
+
+      </form>
+      <p id="print"></p>
       </div>
     </div>
   </div>
@@ -74,6 +83,9 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.1/js/bootstrap.min.js"
     integrity="sha512-ewfXo9Gq53e1q1+WDTjaHAGZ8UvCWq0eXONhwDuIoaH8xz2r96uoAYaQCm1oQhnBfRXrvJztNXFsTloJfgbL5Q=="
     crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+  <script defer src="/assets/js/create_course.js"></script>
+  <script defer src="/assets/js/mock-login.js"></script>
 </body>
 
 </html>
