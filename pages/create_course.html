@@ -15,9 +15,6 @@
     crossorigin="anonymous" referrerpolicy="no-referrer" />
 
   <style>
-    column {
-      height: 100%;
-    }
   </style>
 </head>
 
@@ -30,46 +27,47 @@
 
     <div class="col-md-8" style="background-color:#7B8A8B;padding-top: 10%;">
       <div class="container">
-      <h2>Create Course</h2>
-      <form class="needs-validation" novalidate>
-        <div class="mb-5 col-sm-7">
-          <label for="course_title" class="form-label">Title</label>
-          <input type="text" class="form-control" id="course_title" placeholder="Software Project Management" required>
-        </div>
-
-        <div class="mb-5 col-sm-7">
-          <label for="course_description" class="form-label">Description</label>
-          <textarea class="form-control" id="description" placeholder="" rows="3" required></textarea>
-        </div>
-
-        <div class="mb-5 col-sm-7">
-          <div class="row">
-            <div class="col-sm-6">
-              <label for="course_start_date" class="form-label">Course start date</label>
-              <input type="date" class="form-control" id="course_start_date" required>
-            </div>
-            <div class="col-sm-6">
-              <label for="course_end_date" class="form-label">Course end date</label>
-              <input type="date" class="form-control" id="course_end_date" required>
-            </div>
+        <h2>Create Course</h2>
+        <form class="needs-validation" novalidate>
+          <div class="mb-5 col-sm-7">
+            <label for="course_title" class="form-label">Title</label>
+            <input type="text" class="form-control" id="course_title" placeholder="Software Project Management"
+              required>
           </div>
 
-          <div class="row">
-            <div class="col-sm-6">
-              <label for="enrolment_start_date" class="form-label">Course start date</label>
-              <input type="date" class="form-control" id="enrolment_start_date" required>
+          <div class="mb-5 col-sm-7">
+            <label for="course_description" class="form-label">Description</label>
+            <textarea class="form-control" id="description" placeholder="" rows="3" required></textarea>
+          </div>
+
+          <div class="mb-5 col-sm-7">
+            <div class="row">
+              <div class="col-sm-6">
+                <label for="course_start_date" class="form-label">Course start date</label>
+                <input type="date" class="form-control" id="course_start_date" required>
+              </div>
+              <div class="col-sm-6">
+                <label for="course_end_date" class="form-label">Course end date</label>
+                <input type="date" class="form-control" id="course_end_date" required>
+              </div>
             </div>
-            <div class="col-sm-6">
-              <label for="enrolment_end_date" class="form-label">Course end date</label>
-              <input type="date" class="form-control" id="enrolment_end_date" required>
+
+            <div class="row">
+              <div class="col-sm-6">
+                <label for="enrolment_start_date" class="form-label">Course start date</label>
+                <input type="date" class="form-control" id="enrolment_start_date" required>
+              </div>
+              <div class="col-sm-6">
+                <label for="enrolment_end_date" class="form-label">Course end date</label>
+                <input type="date" class="form-control" id="enrolment_end_date" required>
+              </div>
             </div>
           </div>
-        </div>
-
-        <button class="btn btn-info" float-right type="submit" id="submit">Add</button>
-
-      </form>
-      <p id="print"></p>
+          <div class="text-center">
+            <button class="btn btn-light me-4" type="submit" id="cancel">Cancel</button>
+            <button class="btn btn-info" type="submit" id="submit">Add</button>
+          </div>
+        </form>
       </div>
     </div>
   </div>
