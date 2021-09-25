@@ -84,6 +84,7 @@ const onQuestionTypeChange = (element, questionNumber) => {
 
 const createQuiz = {
   questionTypes: [],
+  sections: [],
 
   ensureQuestionTypes: function() {
     if (this.questionTypes.length > 0) return
@@ -111,6 +112,11 @@ const createQuiz = {
               id
               name
             }
+
+            section {
+              id
+              name
+            }
           }
         `
       })
@@ -118,6 +124,7 @@ const createQuiz = {
 
     const responseJson = await response.json()
     this.questionTypes = responseJson.data.question_type
+    this.sections = responseJson.data.section
     this.updateQuestionTypeTemplate()
   },
 
