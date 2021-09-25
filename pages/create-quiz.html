@@ -60,9 +60,11 @@
           <div class="container px-0">
             <label class="form-label">Options</label>
 
-            <input type="text" id="option-1" class="form-control" placeholder="Please enter an option" />
+            <div class="options">
+              <input type="text" id="option-1" class="form-control" placeholder="Please enter an option" />
+            </div>
 
-            <button class="btn btn-outline-secondary w-100 mt-3">
+            <button class="btn btn-outline-secondary w-100 mt-3" onclick="generateOption(this)">
               <i class="fas fa-plus me-3"></i>
               Add Option
             </button>
