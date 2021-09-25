@@ -6,6 +6,10 @@ const generateQuestionCard = () => {
   const questionHeaderElement = $(questionElement).find(".question-display")[0]
   $(questionHeaderElement).html(`Question ${totalQuestions + 1}`)
 
+  // Setup change listener for question type dropdown
+  const questionTypeDropdownElement = $(questionElement).find(".question-type")[0]
+  $(questionTypeDropdownElement).attr("onchange", `onQuestionTypeChange(this, ${totalQuestions})`)
+
   // Setup dynamic options groups
   const radioButtonElement = $(questionElement).find(".form-check-input")[0]
   $(radioButtonElement).attr("name", `question-${totalQuestions}`)
@@ -21,8 +25,6 @@ const generateQuestionCard = () => {
 const generateOption = (element, questionNumber) => {
   const parents = $(element).parents()
   const cardElement = parents[2]
-  const questionTypeElement = $(cardElement).find(".section-id")[0]
-  const questionType = $(questionTypeElement).val()
 
   const optionInputElement = $($("#option-input-template").html())
   const radioButtonElement = $(optionInputElement).find(".form-check-input")[0]
@@ -30,6 +32,11 @@ const generateOption = (element, questionNumber) => {
 
   const optionsElement = $(cardElement).find(".options")[0]
   $(optionsElement).append(optionInputElement)
+}
+
+const onQuestionTypeChange = (element, questionNumber) => {
+  // TODO: Vera help me handle this
+  console.log(element, questionNumber)
 }
 
 $(document).ready(() => {
