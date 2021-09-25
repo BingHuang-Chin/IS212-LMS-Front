@@ -1,6 +1,17 @@
 const generateQuestionCard = () => {
-  const questionTemplate = $("#question-template").html()
-  $("#question-body").append(questionTemplate)
+  const totalQuestions = $("#question-body").children().length
+  const questionElement = $($("#question-template").html())
+
+  // Setup question number
+  const questionHeaderElement = $(questionElement).find(".question-display")[0]
+  $(questionHeaderElement).html(`Question ${totalQuestions + 1}`)
+
+  // Setup dynamic options groups
+  const radioButtonElement = $(questionElement).find(".form-check-input")[0]
+  $(radioButtonElement).attr("name", `question-${totalQuestions}`)
+  $(radioButtonElement).attr("checked", true)
+
+  $("#question-body").append(questionElement)
 }
 
 const generateOption = element => {
