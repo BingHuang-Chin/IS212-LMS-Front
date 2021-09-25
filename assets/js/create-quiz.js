@@ -1,4 +1,6 @@
 const generateQuestionCard = () => {
+  createQuiz.ensureQuestionTypes()
+
   const totalQuestions = $("#question-body").children().length
   const questionElement = $($("#question-template").html())
 
@@ -39,6 +41,48 @@ const onQuestionTypeChange = (element, questionNumber) => {
   console.log(element, questionNumber)
 }
 
-$(document).ready(() => {
+const createQuiz = {
+  questionTypes: [],
+
+  ensureQuestionTypes: function() {
+    if (this.questionTypes.length > 0) return
+
+    Swal.fire({
+      title: 'Error!',
+      text: 'No question types available for selection',
+      icon: 'error'
+    })
+
+    throw new Error("No question types loaded.")
+  },
+
+  getQuestionTypes: async function() {
+    const response = await fetch("http://localhost:8080/v1/graphql", {
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json',
+        'authorization': `Bearer ${getIdToken()}`,
+      },
+      body: JSON.stringify({
+        query: `
+          query {
+            question_type {
+              id
+              name
+            }
+          }
+        `
+      })
+    })
+
+    const responseJson = await response.json()
+    this.questionTypes = responseJson.data.question_type
+  }
+}
+
+$(document).ready(async () => {
+  ensureAuthenticated()
+
+  await createQuiz.getQuestionTypes()
   generateQuestionCard()
 })
