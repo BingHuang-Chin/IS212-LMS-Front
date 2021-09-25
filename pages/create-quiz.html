@@ -61,7 +61,10 @@
             <label class="form-label">Options</label>
 
             <div class="options">
-              <input type="text" class="form-control" placeholder="Please enter an option" />
+              <div class="container d-flex align-items-center">
+                <input class="form-check-input my-0 me-3" type="radio">
+                <input type="text" class="form-control" placeholder="Please enter an option" />
+              </div>
             </div>
 
             <button class="btn btn-outline-secondary w-100 mt-3" onclick="generateOption(this)">
@@ -75,7 +78,10 @@
     </template>
 
     <template id="option-input-template">
-      <input type="text" class="form-control mt-2" placeholder="Please enter an option" />
+      <div class="container d-flex align-items-center mt-2">
+        <input class="form-check-input my-0 me-3" type="radio">
+        <input type="text" class="form-control" placeholder="Please enter an option" />
+      </div>
     </template>
 
 
