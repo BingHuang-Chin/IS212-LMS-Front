@@ -34,5 +34,5 @@ const onLoginSuccessful = (err, result) => {
   localStorage.setItem('idToken', idToken)
   localStorage.setItem('tokenExpiry', expireTimestamp)
 
-  window.location.replace("/home")
+  window.location.replace("/pages/home")
 }
