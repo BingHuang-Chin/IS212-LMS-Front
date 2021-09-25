@@ -1,38 +1,49 @@
+const HTML_ELEMENTS = {
+  addOptionClass: ".add-option",
+  optionsClass: ".options",
+  optionInputTemplateId: "#option-input-template",
+  radioButtonClass: ".form-check-input",
+  questionBodyId: "#question-body",
+  questionTemplateId: "#question-template",
+  questionTitleClass: ".question-display",
+  questionTypeClass: ".question-type"
+}
+
 const generateQuestionCard = () => {
   createQuiz.ensureQuestionTypes()
 
-  const totalQuestions = $("#question-body").children().length
-  const questionElement = $($("#question-template").html())
+  const totalQuestions = $(HTML_ELEMENTS.questionBodyId).children().length
+  const questionElement = $($(HTML_ELEMENTS.questionTemplateId).html())
 
   // Setup question number
-  const questionHeaderElement = $(questionElement).find(".question-display")[0]
+  const questionHeaderElement = $(questionElement).find(HTML_ELEMENTS.questionTitleClass)[0]
   $(questionHeaderElement).html(`Question ${totalQuestions + 1}`)
 
   // Setup change listener for question type dropdown
-  const questionTypeDropdownElement = $(questionElement).find(".question-type")[0]
+  const questionTypeDropdownElement = $(questionElement).find(HTML_ELEMENTS.questionTypeClass)[0]
   $(questionTypeDropdownElement).attr("onchange", `onQuestionTypeChange(this, ${totalQuestions})`)
 
   // Setup dynamic options groups
-  const radioButtonElement = $(questionElement).find(".form-check-input")[0]
+  const radioButtonElement = $(questionElement).find(HTML_ELEMENTS.radioButtonClass)[0]
   $(radioButtonElement).attr("name", `question-${totalQuestions}`)
   $(radioButtonElement).attr("checked", true)
 
   // Setup event listener for adding new options
-  const addOptionButtonElement = $(questionElement).find(".add-option")[0]
+  const addOptionButtonElement = $(questionElement).find(HTML_ELEMENTS.addOptionClass)[0]
   $(addOptionButtonElement).attr("onclick", `generateOption(this, ${totalQuestions})`)
 
-  $("#question-body").append(questionElement)
+  $(HTML_ELEMENTS.questionBodyId).append(questionElement)
 }
 
 const generateOption = (element, questionNumber) => {
   const parents = $(element).parents()
   const cardElement = parents[2]
 
-  const optionInputElement = $($("#option-input-template").html())
-  const radioButtonElement = $(optionInputElement).find(".form-check-input")[0]
+  const optionInputElement = $($(HTML_ELEMENTS.optionInputTemplateId).html())
+  const radioButtonElement = $(optionInputElement).find(HTML_ELEMENTS.radioButtonClass)[0]
   $(radioButtonElement).attr("name", `question-${questionNumber}`)
 
-  const optionsElement = $(cardElement).find(".options")[0]
+  const optionsElement = $(cardElement).find(HTML_ELEMENTS.optionsClass)[0]
   $(optionsElement).append(optionInputElement)
 }
 
@@ -81,15 +92,15 @@ const createQuiz = {
   },
 
   updateQuestionTypeTemplate: function() {
-    const questionElement = $($("#question-template").html())
-    const questionTypeSelectElement = $(questionElement.find(".question-type")[0])
+    const questionElement = $($(HTML_ELEMENTS.questionTemplateId).html())
+    const questionTypeSelectElement = $(questionElement.find(HTML_ELEMENTS.questionTypeClass)[0])
 
     this.questionTypes.forEach(questionType => {
       const { id, name } = questionType
       questionTypeSelectElement.append(`<option value="${id}">${name}</option>`)
     })
 
-    $($("#question-template")[0].content.children[0]).replaceWith(questionElement)
+    $($(HTML_ELEMENTS.questionTemplateId)[0].content.children[0]).replaceWith(questionElement)
   }
 }
 
