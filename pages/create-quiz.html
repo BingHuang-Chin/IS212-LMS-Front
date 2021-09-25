@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LMS - Create quiz</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LMS - Create quiz</title>
 
-  <link
+    <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.1/css/bootstrap.min.css"
       integrity="sha512-6KY5s6UI5J7SVYuZB4S/CZMyPylqyyNZco376NM2Z8Sb8OxEdp02e1jkKk/wZxIEmjQ6DRCEBhni+gpr9c4tvA=="
@@ -20,10 +20,44 @@
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     />
-</head>
-<body>
-  
-  <script
+  </head>
+  <body>
+    <div class="container py-4">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title mb-3">Quiz information</h5>
+
+          <div class="container mb-4">
+            <label for="quiz-title" class="form-label">Title</label>
+            <input type="text" id="quiz-title" class="form-control" aria-describedby="quizTitleHelpBlock" />
+            <div id="quizTitleHelpBlock" class="form-text">
+              A friendly quiz title to show the learners what this quiz is about.
+            </div>
+          </div>
+
+          <div class="container mb-4">
+            <label for="quiz-title" class="form-label">Section</label>
+            <select id="section-id" class="form-select" aria-describedby="sectionIdHelpBlock">
+              <option>Test option 1</option>
+              <option>Test option 2</option>
+            </select>
+            <div id="sectionIdHelpBlock" class="form-text">
+              Section in which this quiz should be created within.
+            </div>
+          </div>
+
+          <div class="container mb-4">
+            <label for="time-limit" class="form-label">Time limit</label>
+            <input type="number" id="time-limit" class="form-control" aria-describedby="timeLimitHelpBlock" />
+            <div id="timeLimitHelpBlock" class="form-text">
+              Sets a duration of the quiz, set it to -1 to allow infinite time.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script
       src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
       integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ=="
       crossorigin="anonymous"
@@ -43,5 +77,5 @@
     ></script>
     <script defer src="/assets/js/common/authentication.js"></script>
     <script defer src="/assets/js/create-quiz.js"></script>
-</body>
+  </body>
 </html>
