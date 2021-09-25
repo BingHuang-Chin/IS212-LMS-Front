@@ -8,7 +8,11 @@ const HTML_ELEMENTS = {
   questionTemplateId: "#question-template",
   questionTitleClass: ".question-display",
   questionTypeClass: ".question-type",
-  sectionSelectId: "#section-id"
+  questionInfoClass: ".question-info",
+  questionClass: ".question",
+  quizTitleId: "#quiz-title",
+  sectionSelectId: "#section-id",
+  timeLimitId: "#time-limit"
 }
 
 const QUESTION_TYPES = {
@@ -87,7 +91,7 @@ const createQuiz = {
   questionTypes: [],
   sections: [],
 
-  ensureQuestionTypes: function() {
+  ensureQuestionTypes: function () {
     if (this.questionTypes.length > 0) return
 
     Swal.fire({
@@ -99,7 +103,7 @@ const createQuiz = {
     throw new Error("No question types loaded.")
   },
 
-  getQuestionTypes: async function() {
+  getQuestionTypes: async function () {
     const response = await fetch("http://localhost:8080/v1/graphql", {
       method: "POST",
       headers: {
@@ -126,12 +130,37 @@ const createQuiz = {
     const responseJson = await response.json()
     this.questionTypes = responseJson.data.question_type
     this.sections = responseJson.data.section
-    
+
     this.updateQuestionTypeTemplate()
     this.updateSectionOptions()
   },
 
-  updateQuestionTypeTemplate: function() {
+  postQuiz: async function (quizData) {
+    const response = await fetch("http://localhost:8080/v1/graphql", {
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json',
+        'authorization': `Bearer ${getIdToken()}`,
+      },
+      body: JSON.stringify({
+        query: `
+          mutation MyMutation($object: quiz_insert_input!) {
+            insert_quiz_one(object: $object) {
+              id
+            }
+          }        
+        `,
+        variables: {
+          object: quizData
+        }
+      })
+    })
+
+    const responseJson = await response.json()
+    console.log(responseJson)
+  },
+
+  updateQuestionTypeTemplate: function () {
     const questionElement = $($(HTML_ELEMENTS.questionTemplateId).html())
     const questionTypeSelectElement = $(questionElement.find(HTML_ELEMENTS.questionTypeClass)[0])
 
@@ -143,12 +172,66 @@ const createQuiz = {
     $($(HTML_ELEMENTS.questionTemplateId)[0].content.children[0]).replaceWith(questionElement)
   },
 
-  updateSectionOptions: function() {
+  updateSectionOptions: function () {
     this.sections.forEach(section => {
       const { id, name } = section
       $(HTML_ELEMENTS.sectionSelectId).append(`<option value="${id}">${name}</option>`)
     })
   }
+}
+
+const onCreateQuiz = async () => {
+  const questionInfo = getQuestionInformationData()
+  const questions = getQuestionsData()
+  const quizData = {
+    ...questionInfo,
+    questions
+  }
+
+  await createQuiz.postQuiz(quizData)
+}
+
+const getQuestionInformationData = () => {
+  const questionInfoElement = $(HTML_ELEMENTS.questionInfoClass)
+  const [title, section_id, time_limit] = [
+    $(questionInfoElement).find(HTML_ELEMENTS.quizTitleId).val(),
+    $(questionInfoElement).find(HTML_ELEMENTS.sectionSelectId).val(),
+    $(questionInfoElement).find(HTML_ELEMENTS.timeLimitId).val()
+  ]
+
+  return { title, section_id, time_limit }
+}
+
+const getQuestionsData = () => {
+  const questionsData = []
+  $(HTML_ELEMENTS.questionClass).each((_, cardElement) => {
+    // NOTE: it only retrieves the first input (question-title) value
+    const title = $(cardElement).find(HTML_ELEMENTS.inputClass).val()
+    const question_type_id = parseInt($(cardElement).find(HTML_ELEMENTS.questionTypeClass).val())
+
+    questionsData.push({
+      title,
+      question_type_id,
+      question_options: getOptionsData(cardElement)
+    })
+  })
+
+  return { data: questionsData }
+}
+
+const getOptionsData = (element) => {
+  const optionsData = []
+  $(element)
+    .find(HTML_ELEMENTS.optionsClass)
+    .children()
+    .each((_, option) => {
+      const is_answer = $(option).find(HTML_ELEMENTS.radioButtonClass).is(":checked")
+      const title = $(option).find(HTML_ELEMENTS.inputClass).val()
+
+      optionsData.push({ is_answer, title })
+    })
+
+  return { data: optionsData }
 }
 
 $(document).ready(async () => {
