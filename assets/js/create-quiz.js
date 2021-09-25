@@ -7,7 +7,8 @@ const HTML_ELEMENTS = {
   questionBodyId: "#question-body",
   questionTemplateId: "#question-template",
   questionTitleClass: ".question-display",
-  questionTypeClass: ".question-type"
+  questionTypeClass: ".question-type",
+  sectionSelectId: "#section-id"
 }
 
 const QUESTION_TYPES = {
@@ -125,7 +126,9 @@ const createQuiz = {
     const responseJson = await response.json()
     this.questionTypes = responseJson.data.question_type
     this.sections = responseJson.data.section
+    
     this.updateQuestionTypeTemplate()
+    this.updateSectionOptions()
   },
 
   updateQuestionTypeTemplate: function() {
@@ -138,6 +141,13 @@ const createQuiz = {
     })
 
     $($(HTML_ELEMENTS.questionTemplateId)[0].content.children[0]).replaceWith(questionElement)
+  },
+
+  updateSectionOptions: function() {
+    this.sections.forEach(section => {
+      const { id, name } = section
+      $(HTML_ELEMENTS.sectionSelectId).append(`<option value="${id}">${name}</option>`)
+    })
   }
 }
 
