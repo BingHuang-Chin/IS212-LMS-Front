@@ -29,41 +29,9 @@
     />
   </head>
   <body>
-    <div class="container py-4">
-      <div class="card mb-5">
-        <div class="card-body">
-          <h5 class="card-title mb-3">Quiz information</h5>
-
-          <div class="container px-0 mb-4">
-            <label for="quiz-title" class="form-label">Title</label>
-            <input type="text" id="quiz-title" class="form-control" aria-describedby="quizTitleHelpBlock" />
-            <div id="quizTitleHelpBlock" class="form-text">
-              A friendly quiz title to show the learners what this quiz is about.
-            </div>
-          </div>
-
-          <div class="container px-0 mb-4">
-            <label for="quiz-title" class="form-label">Section</label>
-            <select id="section-id" class="form-select" aria-describedby="sectionIdHelpBlock">
-              <option>Test option 1</option>
-              <option>Test option 2</option>
-            </select>
-            <div id="sectionIdHelpBlock" class="form-text">
-              Section in which this quiz should be created within.
-            </div>
-          </div>
-
-          <div class="container px-0 mb-4">
-            <label for="time-limit" class="form-label">Time limit</label>
-            <input type="number" id="time-limit" class="form-control" aria-describedby="timeLimitHelpBlock" />
-            <div id="timeLimitHelpBlock" class="form-text">
-              Sets a duration of the quiz, set it to -1 to allow infinite time.
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="card">
+    <!-- Templates for re-use -->
+    <template id="question-template">
+      <div class="card mb-4">
         <div class="card-body">
           <div class="card-title">
             <div class="row">
@@ -102,8 +70,47 @@
 
         </div>
       </div>
+    </template>
 
-      <button class="btn btn-outline-primary w-100 mt-3">
+
+    <!-- Main UI displayed to users -->
+    <div class="container py-4">
+      <div class="card mb-5">
+        <div class="card-body">
+          <h5 class="card-title mb-3">Quiz information</h5>
+
+          <div class="container px-0 mb-4">
+            <label for="quiz-title" class="form-label">Title</label>
+            <input type="text" id="quiz-title" class="form-control" aria-describedby="quizTitleHelpBlock" />
+            <div id="quizTitleHelpBlock" class="form-text">
+              A friendly quiz title to show the learners what this quiz is about.
+            </div>
+          </div>
+
+          <div class="container px-0 mb-4">
+            <label for="quiz-title" class="form-label">Section</label>
+            <select id="section-id" class="form-select" aria-describedby="sectionIdHelpBlock">
+              <option>Test option 1</option>
+              <option>Test option 2</option>
+            </select>
+            <div id="sectionIdHelpBlock" class="form-text">
+              Section in which this quiz should be created within.
+            </div>
+          </div>
+
+          <div class="container px-0 mb-4">
+            <label for="time-limit" class="form-label">Time limit</label>
+            <input type="number" id="time-limit" class="form-control" aria-describedby="timeLimitHelpBlock" />
+            <div id="timeLimitHelpBlock" class="form-text">
+              Sets a duration of the quiz, set it to -1 to allow infinite time.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="question-body"></div>
+
+      <button class="btn btn-outline-primary w-100 mt-3" onclick="generateQuestionCard()">
         <i class="fas fa-plus me-3"></i>
         Add Question
       </button>
