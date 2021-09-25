@@ -3,10 +3,16 @@ const HTML_ELEMENTS = {
   optionsClass: ".options",
   optionInputTemplateId: "#option-input-template",
   radioButtonClass: ".form-check-input",
+  inputClass: ".form-control",
   questionBodyId: "#question-body",
   questionTemplateId: "#question-template",
   questionTitleClass: ".question-display",
   questionTypeClass: ".question-type"
+}
+
+const QUESTION_TYPES = {
+  mcq: "1",
+  trueFalse: "2"
 }
 
 const generateQuestionCard = () => {
@@ -35,7 +41,7 @@ const generateQuestionCard = () => {
   $(HTML_ELEMENTS.questionBodyId).append(questionElement)
 }
 
-const generateOption = (element, questionNumber) => {
+const generateOption = (element, questionNumber, defaultValue) => {
   const parents = $(element).parents()
   const cardElement = parents[2]
 
@@ -43,13 +49,37 @@ const generateOption = (element, questionNumber) => {
   const radioButtonElement = $(optionInputElement).find(HTML_ELEMENTS.radioButtonClass)[0]
   $(radioButtonElement).attr("name", `question-${questionNumber}`)
 
+  if (defaultValue)
+    $(optionInputElement).find(HTML_ELEMENTS.inputClass).val(defaultValue)
+
   const optionsElement = $(cardElement).find(HTML_ELEMENTS.optionsClass)[0]
   $(optionsElement).append(optionInputElement)
 }
 
 const onQuestionTypeChange = (element, questionNumber) => {
-  // TODO: Vera help me handle this
-  console.log(element, questionNumber)
+  const parents = $(element).parents()
+  const cardElement = parents[3]
+
+  const questionType = $(element).val()
+  if (questionType === QUESTION_TYPES.mcq) {
+    const addOptionButton = $(cardElement).find(HTML_ELEMENTS.addOptionClass)[0]
+    $(addOptionButton).removeClass("d-none")
+  }
+  else if (questionType === QUESTION_TYPES.trueFalse) {
+    const addOptionButton = $(cardElement).find(HTML_ELEMENTS.addOptionClass)[0]
+    $(addOptionButton).addClass("d-none")
+
+    const optionElements = $(cardElement).find(HTML_ELEMENTS.optionsClass).children()
+    optionElements.each((index, optionElement) => {
+      if (index < 2)
+        $(optionElement).find(HTML_ELEMENTS.inputClass).val(index === 0 ? "True" : "False")
+      else
+        $(optionElement).remove()
+    })
+
+    if (optionElements.length === 1)
+      generateOption($(cardElement).find(HTML_ELEMENTS.addOptionClass)[0], questionNumber, "False")
+  }
 }
 
 const createQuiz = {
