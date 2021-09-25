@@ -77,6 +77,19 @@ const createQuiz = {
 
     const responseJson = await response.json()
     this.questionTypes = responseJson.data.question_type
+    this.updateQuestionTypeTemplate()
+  },
+
+  updateQuestionTypeTemplate: function() {
+    const questionElement = $($("#question-template").html())
+    const questionTypeSelectElement = $(questionElement.find(".question-type")[0])
+
+    this.questionTypes.forEach(questionType => {
+      const { id, name } = questionType
+      questionTypeSelectElement.append(`<option value="${id}">${name}</option>`)
+    })
+
+    $($("#question-template")[0].content.children[0]).replaceWith(questionElement)
   }
 }
 
