@@ -51,8 +51,8 @@ async function createCourse({ course_title, description, course_start_date, cour
                     description: "", 
                     enrolment_end_date: "", 
                     enrolment_start_date: "", 
-                    start_date: "", end_date: ""}
-              )}
+                    start_date: "", end_date: ""
+                })}
             `,
             variables: {
                 course: {
