@@ -287,7 +287,7 @@ const updateQuiz = {
   },
 
   modifyQuiz: async function (query) {
-    if (!query && !this.queuedDeletionQuery) 
+    if (!query && !this.queuedDeletionQuery)
       return
 
     const response = await fetch(GRAPHQL_ENDPOINT, {
@@ -338,14 +338,17 @@ const onSubmitQuiz = async () => {
   if (!updateQuiz.quiz)
     await createQuiz.postQuiz(quizData)
   else {
-    const updateQueries = getQuestionUpdateQuery(questions)
-    updateQuiz.modifyQuiz(updateQueries)
+    const updatedQuestionInfo = getQuestionInfoUpdateQuery(questionInfo)
+    const updatedQuestions = getQuestionUpdateQuery(questions)
+
+    console.log(updatedQuestionInfo)
+    updateQuiz.modifyQuiz(updatedQuestionInfo.concat(updatedQuestions))
   }
 }
 
 const onOptionRemove = element => {
   const optionElements = $(element).parents()[1]
-  const optionsLeft = $(optionElements).children().length  
+  const optionsLeft = $(optionElements).children().length
 
   if (optionsLeft <= 1) {
     Swal.fire({
@@ -426,6 +429,27 @@ const getOptionsData = (element) => {
     })
 
   return { data: optionsData }
+}
+
+const getQuestionInfoUpdateQuery = (questionInfo) => {
+  let query = ""
+  const { title, section_id, time_limit } = updateQuiz.quiz
+
+  if (questionInfo.title != title
+    || questionInfo.section_id != section_id
+    || questionInfo.time_limit != time_limit) {
+    query += `
+      update_quiz_by_pk(pk_columns: {id: ${updateQuiz.quiz.id}}, _set: {
+        section_id: ${questionInfo.section_id},
+        time_limit: ${questionInfo.time_limit},
+        title: "${questionInfo.title}"
+      }) {
+        id
+      }
+  `
+  }
+
+  return query
 }
 
 const getQuestionUpdateQuery = ({ data }) => {
