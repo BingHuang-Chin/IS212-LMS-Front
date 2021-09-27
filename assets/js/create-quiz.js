@@ -135,7 +135,7 @@ const createQuiz = {
       method: "POST",
       headers: {
         'Content-Type': 'application/json',
-        'authorization': `Bearer ${getIdToken()}`,
+        'authorization': getIdToken(),
       },
       body: JSON.stringify({
         query: `
@@ -167,7 +167,7 @@ const createQuiz = {
       method: "POST",
       headers: {
         'Content-Type': 'application/json',
-        'authorization': `Bearer ${getIdToken()}`,
+        'authorization': getIdToken(),
       },
       body: JSON.stringify({
         query: `
@@ -231,7 +231,7 @@ const updateQuiz = {
       method: "POST",
       headers: {
         'Content-Type': 'application/json',
-        'authorization': `Bearer ${getIdToken()}`,
+        'authorization': getIdToken(),
       },
       body: JSON.stringify({
         query: `
@@ -380,6 +380,7 @@ const getQuestionUpdateQuery = ({ data }) => {
   const orignalQuizState = updateQuiz.quiz.questions
   data.forEach(question => {
     const originalQuestion = orignalQuizState.find(q => q.id == question.id)
+    console.log(originalQuestion)
 
     if (!originalQuestion) {
       // TODO: Add new questions here
@@ -389,7 +390,7 @@ const getQuestionUpdateQuery = ({ data }) => {
     // TODO: Handle option update query here
 
     if (originalQuestion.question_type_id != question.question_type_id
-      && originalQuestion.title != question.title) {
+      || originalQuestion.title != question.title) {
       query += `
           mutation {
             update_question_by_pk(pk_columns: {id: ${question.id}}, _set: {
