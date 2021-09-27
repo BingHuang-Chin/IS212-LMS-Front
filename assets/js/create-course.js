@@ -60,7 +60,8 @@ async function createCourse() {
                     "start_date": course_start_date,
                     "end_date": course_end_date,
                     enrolment_start_date,
-                    enrolment_end_date
+                    enrolment_end_date,
+                    badge_id
                 }
             }
         })
@@ -87,7 +88,7 @@ async function createCourse() {
 
 
 const responseJson = await response.json()
-return responseJson.data.courseCreate
+return responseJson
 }
 
 
@@ -95,7 +96,7 @@ return responseJson.data.courseCreate
 
 async function getDropdownOptions() {
     const response = await fetch(GRAPHQL_ENDPOINT, {
-        method = "POST",
+        method: 'POST',
         headers: {
             'Content-Type': 'application/json',
             authorization: getIdToken(),
@@ -110,4 +111,5 @@ async function getDropdownOptions() {
     })
 
     const responseJson = await response.json()
+    return responseJson
 }
