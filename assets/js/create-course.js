@@ -30,13 +30,14 @@ const GRAPHQL_ENDPOINT = "http://localhost:8080/v1/graphql"
 
 
 async function createCourse() {
-    const [course_title, course_description, course_start_date, course_end_date, enrolment_start_date, enrolment_end_date] = [
+    const [course_title, course_description, course_start_date, course_end_date, enrolment_start_date, enrolment_end_date, badge_id] = [
         $('#course_title').val(),
         $('#course_description').val(),
         $('#course_start_date').val(),
         $('#course_end_date').val(),
         $('#enrolment_start_date').val(),
-        $('#enrolment_end_date').val()
+        $('#enrolment_end_date').val(),
+        $('#badge_id').val()
     ]
     const response = await fetch(GRAPHQL_ENDPOINT, {
         method: 'POST',
@@ -55,27 +56,16 @@ async function createCourse() {
             variables: {
                 object: {
                     "title": course_title,
-                    course_description,
-                    course_start_date,
-                    course_end_date,
+                    "description": course_description,
+                    "start_date": course_start_date,
+                    "end_date": course_end_date,
                     enrolment_start_date,
                     enrolment_end_date
                 }
             }
         })
     })
-    // Use the same variable name to avoid mapping manually
-    // {
-    //     "object": {
-    //       "title": "",
-    //       "description": "",
-    //       "start_date": "",
-    //       "end_date": "",
-    //       "enrolment_start_date": "",
-    //       "enrolment_end_date": "",
-    //       "badge_id": 1
-    //     }
-    //   }
+
     const { errors } = await response.json()
     if (errors) {
         Swal({
@@ -99,3 +89,5 @@ async function createCourse() {
 const responseJson = await response.json()
 return responseJson.data.courseCreate
 }
+
+createCourse()
