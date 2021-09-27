@@ -279,7 +279,8 @@ const onCreateQuiz = async () => {
     questions
   }
 
-  await createQuiz.postQuiz(quizData)
+  if (!updateQuiz.quiz)
+    await createQuiz.postQuiz(quizData)
 }
 
 const getQuestionInformationData = () => {
