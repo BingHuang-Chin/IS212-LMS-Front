@@ -380,28 +380,58 @@ const getQuestionUpdateQuery = ({ data }) => {
   const orignalQuizState = updateQuiz.quiz.questions
   data.forEach(question => {
     const originalQuestion = orignalQuizState.find(q => q.id == question.id)
-    console.log(originalQuestion)
-
     if (!originalQuestion) {
       // TODO: Add new questions here
       return
     }
 
-    // TODO: Handle option update query here
+    query += getOptionUpdateQuery(originalQuestion.id, question.question_options, originalQuestion.question_options)
 
     if (originalQuestion.question_type_id != question.question_type_id
       || originalQuestion.title != question.title) {
       query += `
-          mutation {
-            update_question_by_pk(pk_columns: {id: ${question.id}}, _set: {
-              question_type_id: "${question.question_type_id}"},
-              title: "${question.title}"
-            }) {
-              id
-            }
-          }        
+          update_question_by_pk(pk_columns: {id: ${originalQuestion.id}}, _set: {
+            question_type_id: "${question.question_type_id}"},
+            title: "${question.title}"
+          }) {
+            id
+          }
         `
     }
+  })
+
+  return query
+}
+
+const getOptionUpdateQuery = (questionId, { data }, originalOptions) => {
+  let query = ""
+
+  data.forEach(option => {
+    const originalOption = originalOptions.find(o => o.id == option.id)
+    if (!originalOption) {
+      query += `
+        insert_question_option_one(object: {
+          is_answer: ${option.is_answer},
+          question_id: ${questionId},
+          title: "${option.title}"
+        }) {
+          id
+        }
+      `
+      return
+    }
+
+    if (originalOption.is_answer != option.is_answer 
+      || originalOption.title != option.title) {
+        query += `
+          update_question_option_by_pk(pk_columns: {id: ${originalOption.id}}, _set: {
+            title: "${option.title}",
+            is_answer: ${option.is_answer}
+          }) {
+            id
+          }
+        `
+      }
   })
 
   return query
