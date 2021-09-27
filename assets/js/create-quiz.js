@@ -284,7 +284,7 @@ const updateQuiz = {
     this.quiz.questions.forEach(question => generateQuestionCard(question))
   },
 
-  modifyQuiz: async function(query) {
+  modifyQuiz: async function (query) {
     const response = await fetch(GRAPHQL_ENDPOINT, {
       method: "POST",
       headers: {
@@ -333,6 +333,7 @@ const onSubmitQuiz = async () => {
     await createQuiz.postQuiz(quizData)
   else {
     const updateQueries = getQuestionUpdateQuery(questions)
+    console.log(updateQueries)
     updateQuiz.modifyQuiz(updateQueries)
   }
 }
@@ -416,10 +417,12 @@ const getOptionsData = (element) => {
 
 const getQuestionUpdateQuery = ({ data }) => {
   let query = ""
-
   const orignalQuizState = updateQuiz.quiz.questions
-  data.forEach(question => {
+
+  data.forEach((question, index) => {
+    let queryName = `_question_${index}`
     const originalQuestion = orignalQuizState.find(q => q.id == question.id)
+
     if (!originalQuestion) {
       let newOptionsQuery = ""
       question.question_options.data.forEach((option, index) => {
@@ -431,9 +434,9 @@ const getQuestionUpdateQuery = ({ data }) => {
           }${comma}
         `
       })
-      
+
       query += `
-        insert_question_one(object: {
+        ${queryName}: insert_question_one(object: {
           question_type_id: ${question.question_type_id},
           quiz_id: ${updateQuiz.quiz.id},
           title: "${question.title}",
@@ -454,13 +457,13 @@ const getQuestionUpdateQuery = ({ data }) => {
     if (originalQuestion.question_type_id != question.question_type_id
       || originalQuestion.title != question.title) {
       query += `
-          update_question_by_pk(pk_columns: {id: ${originalQuestion.id}}, _set: {
-            question_type_id: "${question.question_type_id}"},
-            title: "${question.title}"
-          }) {
-            id
-          }
-        `
+        ${queryName}: update_question_by_pk(pk_columns: {id: ${originalQuestion.id}}, _set: {
+          question_type_id: ${question.question_type_id}},
+          title: "${question.title}"
+        }) {
+          id
+        }
+      `
     }
   })
 
@@ -470,11 +473,12 @@ const getQuestionUpdateQuery = ({ data }) => {
 const getOptionUpdateQuery = (questionId, { data }, originalOptions) => {
   let query = ""
 
-  data.forEach(option => {
+  data.forEach((option, index) => {
+    const queryName = `_option_${questionId}_${index}`
     const originalOption = originalOptions.find(o => o.id == option.id)
     if (!originalOption) {
       query += `
-        insert_question_option_one(object: {
+        ${queryName}: insert_question_option_one(object: {
           is_answer: ${option.is_answer},
           question_id: ${questionId},
           title: "${option.title}"
@@ -485,17 +489,17 @@ const getOptionUpdateQuery = (questionId, { data }, originalOptions) => {
       return
     }
 
-    if (originalOption.is_answer != option.is_answer 
+    if (originalOption.is_answer != option.is_answer
       || originalOption.title != option.title) {
-        query += `
-          update_question_option_by_pk(pk_columns: {id: ${originalOption.id}}, _set: {
-            title: "${option.title}",
-            is_answer: ${option.is_answer}
-          }) {
-            id
-          }
-        `
-      }
+      query += `
+        ${queryName}: update_question_option_by_pk(pk_columns: {id: ${originalOption.id}}, _set: {
+          title: "${option.title}",
+          is_answer: ${option.is_answer}
+        }) {
+          id
+        }
+      `
+    }
   })
 
   return query
