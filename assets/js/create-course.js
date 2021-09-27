@@ -24,20 +24,21 @@ Fetch the values of the form submit and send it to hasura database using graphQL
     });
 })();
 
-async function addCourse() {
+
+
+const GRAPHQL_ENDPOINT = "http://localhost:8080/v1/graphql"
+
+
+async function createCourse() {
     const [course_title, course_description, course_start_date, course_end_date, enrolment_start_date, enrolment_end_date] = [
         $('#course_title').val(),
-        $('#description').val(),
+        $('#course_description').val(),
         $('#course_start_date').val(),
         $('#course_end_date').val(),
         $('#enrolment_start_date').val(),
         $('#enrolment_end_date').val()
     ]
-}
-
-
-async function createCourse({ course_title, description, course_start_date, course_end_date, enrolment_start_date, enrolment_end_date }) {
-    const response = await fetch('http://localhost:8080/v1/graphql', {
+    const response = await fetch(GRAPHQL_ENDPOINT, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -45,20 +46,16 @@ async function createCourse({ course_title, description, course_start_date, cour
         },
         body: JSON.stringify({
             query: `
-            mutation {
-                insert_course_one(
-                  object: {
-                    title: "",
-                    description: "", 
-                    enrolment_end_date: "", 
-                    enrolment_start_date: "", 
-                    start_date: "", end_date: ""
-                })}
+            mutation MyMutation($object: course_insert_input!) {
+                insert_course_one(object: $object) {
+                  id
+                }
+              }
             `,
             variables: {
-                course: {
-                    course_title,
-                    description,
+                object: {
+                    "title": course_title,
+                    course_description,
                     course_start_date,
                     course_end_date,
                     enrolment_start_date,
@@ -67,7 +64,38 @@ async function createCourse({ course_title, description, course_start_date, cour
             }
         })
     })
+    // Use the same variable name to avoid mapping manually
+    // {
+    //     "object": {
+    //       "title": "",
+    //       "description": "",
+    //       "start_date": "",
+    //       "end_date": "",
+    //       "enrolment_start_date": "",
+    //       "enrolment_end_date": "",
+    //       "badge_id": 1
+    //     }
+    //   }
+    const { errors } = await response.json()
+    if (errors) {
+        Swal({
+            title: 'Error!',
+            text: 'Failed to add course at the moment',
+            icon: 'error'
+        })
+        return
+    }
 
-    const responseJson = await response.json()
-    return responseJson.data.courseCreate
+    Swal({
+        title: 'Course created!',
+        text: 'The course has been successfully created',
+        icon: 'success'
+    }).then(result => {
+        if (result.isDismissed || result.isConfirmed)
+            location.reload()
+    })
+
+
+const responseJson = await response.json()
+return responseJson.data.courseCreate
 }
