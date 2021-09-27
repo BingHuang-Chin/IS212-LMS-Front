@@ -15,7 +15,9 @@ const HTML_ELEMENTS = {
   quizTitleId: "#quiz-title",
   sectionSelectId: "#section-id",
   timeLimitId: "#time-limit",
-  submitQuizId: "#submit-quiz"
+  submitQuizId: "#submit-quiz",
+  hiddenInputTemplateId: "#hidden-input-template",
+  uidInputClass: ".uid"
 }
 
 const QUESTION_TYPES = {
@@ -43,12 +45,17 @@ const generateQuestionCard = question => {
   $(addOptionButtonElement).attr("onclick", `generateOption(this, ${totalQuestions})`)
 
   if (question) {
+    // Setup hidden input to contain uid
+    const uidInputElement = $($(HTML_ELEMENTS.hiddenInputTemplateId).html())
+    $(uidInputElement).val(question.id)
+    $(questionElement).append(uidInputElement)
+
     // Setup question title, which will be the first input
     const questionTitleElement = $(questionElement).find(HTML_ELEMENTS.inputClass)[0]
     $(questionTitleElement).val(question.title)
 
     question.question_options.forEach(option =>
-      generateOption(addOptionButtonElement, totalQuestions, { value: option.title, checked: option.is_answer }))
+      generateOption(addOptionButtonElement, totalQuestions, { value: option.title, checked: option.is_answer, id: option.id }))
   }
   else {
     // Setup dynamic options groups
@@ -69,6 +76,12 @@ const generateOption = (element, questionNumber, { checked = false, value = "", 
 
   if (value)
     $(optionInputElement).find(HTML_ELEMENTS.inputClass).val(value)
+
+  if (id) {
+    const uidInputElement = $($(HTML_ELEMENTS.hiddenInputTemplateId).html())
+    $(uidInputElement).val(id)
+    $(optionInputElement).append(uidInputElement)
+  }
 
   const optionsElement = $(cardElement).find(HTML_ELEMENTS.optionsClass)[0]
   $(optionsElement).append(optionInputElement)
