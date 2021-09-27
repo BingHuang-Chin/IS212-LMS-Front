@@ -46,7 +46,7 @@ const generateQuestionCard = question => {
     const questionTitleElement = $(questionElement).find(HTML_ELEMENTS.inputClass)[0]
     $(questionTitleElement).val(question.title)
 
-    question.question_options.forEach(option => 
+    question.question_options.forEach(option =>
       generateOption(addOptionButtonElement, totalQuestions, { value: option.title, checked: option.is_answer }))
   }
   else {
@@ -245,13 +245,20 @@ const updateQuiz = {
     const responseJson = await response.json()
     this.quiz = responseJson.data.quiz_by_pk
 
+    if (!this.quiz) {
+      Swal.fire({
+        title: 'Error!',
+        text: 'Quiz not found',
+        icon: 'error'
+      })
+      return
+    }
+
     this.updateQuestionInfoUi()
     this.updateQuestionsUi()
   },
 
   updateQuestionInfoUi: function () {
-    if (!this.quiz) return
-
     const questionInfoElement = $(HTML_ELEMENTS.questionInfoClass)
     $(questionInfoElement).find(HTML_ELEMENTS.quizTitleId).val(this.quiz.title),
       $(questionInfoElement).find(HTML_ELEMENTS.sectionSelectId).val(this.quiz.section_id),
@@ -259,7 +266,6 @@ const updateQuiz = {
   },
 
   updateQuestionsUi: function () {
-    if (!this.quiz) return
     this.quiz.questions.forEach(question => generateQuestionCard(question))
   }
 }
