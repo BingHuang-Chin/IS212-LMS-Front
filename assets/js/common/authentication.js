@@ -30,7 +30,7 @@ const getIdToken = () => {
   if (!isAuthenticated()) 
     return null
 
-  return localStorage.getItem('idToken')
+  return "Bearer " + localStorage.getItem('idToken')
 }
 
 let auth0App = null
