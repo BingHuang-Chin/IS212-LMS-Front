@@ -335,12 +335,19 @@ const getQuestionsData = () => {
     // NOTE: it only retrieves the first input (question-title) value
     const title = $(cardElement).find(HTML_ELEMENTS.inputClass).val()
     const question_type_id = parseInt($(cardElement).find(HTML_ELEMENTS.questionTypeClass).val())
-
-    questionsData.push({
+    let question = {
       title,
       question_type_id,
       question_options: getOptionsData(cardElement)
-    })
+    }
+
+    if (updateQuiz.quiz) {
+      // questionId will be appeneded to the last element, we will retrieve from the last element in find
+      const questionId = parseInt($(cardElement).find(HTML_ELEMENTS.uidInputClass).last().val())
+      question = { ...question, id: questionId }
+    }
+
+    questionsData.push(question)
   })
 
   return { data: questionsData }
@@ -354,8 +361,14 @@ const getOptionsData = (element) => {
     .each((_, option) => {
       const is_answer = $(option).find(HTML_ELEMENTS.radioButtonClass).is(":checked")
       const title = $(option).find(HTML_ELEMENTS.inputClass).val()
+      let optionData = { is_answer, title }
 
-      optionsData.push({ is_answer, title })
+      if (updateQuiz.quiz) {
+        const optionId = parseInt($(option).find(HTML_ELEMENTS.uidInputClass).val())
+        optionData = { ...optionData, id: optionId }
+      }
+
+      optionsData.push(optionData)
     })
 
   return { data: optionsData }
@@ -377,7 +390,7 @@ const getQuestionUpdateQuery = ({ data }) => {
 
     if (originalQuestion.question_type_id != question.question_type_id
       && originalQuestion.title != question.title) {
-        query += `
+      query += `
           mutation {
             update_question_by_pk(pk_columns: {id: ${question.id}}, _set: {
               question_type_id: "${question.question_type_id}"},
