@@ -283,6 +283,23 @@ const onCreateQuiz = async () => {
     await createQuiz.postQuiz(quizData)
 }
 
+const onOptionRemove = element => {
+  const optionElements = $(element).parents()[1]
+  const optionsLeft = $(optionElements).children().length
+
+  if (optionsLeft <= 1) {
+    Swal.fire({
+      title: 'Warning!',
+      text: 'Cannot remove last option',
+      icon: 'warning'
+    })
+    return
+  }
+
+  const optionElement = $(element).parents()[0]
+  $(optionElement).remove()
+}
+
 const getQuestionInformationData = () => {
   const questionInfoElement = $(HTML_ELEMENTS.questionInfoClass)
   const [title, section_id, time_limit] = [
