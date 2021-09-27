@@ -281,6 +281,10 @@ const onSubmitQuiz = async () => {
 
   if (!updateQuiz.quiz)
     await createQuiz.postQuiz(quizData)
+  else {
+    const updateQueries = getQuestionUpdateQuery(questions)
+    console.log(updateQueries)
+  }
 }
 
 const onOptionRemove = element => {
@@ -341,6 +345,38 @@ const getOptionsData = (element) => {
     })
 
   return { data: optionsData }
+}
+
+const getQuestionUpdateQuery = ({ data }) => {
+  let query = ""
+
+  const orignalQuizState = updateQuiz.quiz.questions
+  data.forEach(question => {
+    const originalQuestion = orignalQuizState.find(q => q.id == question.id)
+
+    if (!originalQuestion) {
+      // TODO: Add new questions here
+      return
+    }
+
+    // TODO: Handle option update query here
+
+    if (originalQuestion.question_type_id != question.question_type_id
+      && originalQuestion.title != question.title) {
+        query += `
+          mutation {
+            update_question_by_pk(pk_columns: {id: ${question.id}}, _set: {
+              question_type_id: "${question.question_type_id}"},
+              title: "${question.title}"
+            }) {
+              id
+            }
+          }        
+        `
+    }
+  })
+
+  return query
 }
 
 $(document).ready(async () => {
