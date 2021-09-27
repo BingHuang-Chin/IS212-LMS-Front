@@ -24,7 +24,6 @@ Fetch the values of the form submit and send it to hasura database using graphQL
     });
 })();
 
-
 async function addCourse() {
     const [course_title, course_description, course_start_date, course_end_date, enrolment_start_date, enrolment_end_date] = [
         $('#course_title').val(),
