@@ -12,8 +12,8 @@ Fetch the values of the form submit and send it to hasura database using graphQL
     // Loop over them and prevent submission
     Array.prototype.slice.call(forms).forEach((form) => {
         form.addEventListener('submit', (event) => {
+            event.preventDefault()
             if (!form.checkValidity()) {
-                event.preventDefault();
                 event.stopPropagation();
             }
             else {
@@ -30,15 +30,16 @@ const GRAPHQL_ENDPOINT = "http://localhost:8080/v1/graphql"
 
 
 async function createCourse() {
-    const [course_title, course_description, course_start_date, course_end_date, enrolment_start_date, enrolment_end_date, badge_id] = [
+    const [title, description, start_date, end_date, enrolment_start_date, enrolment_end_date, badge_id] = [
         $('#course_title').val(),
-        $('#course_description').val(),
+        $('#description').val(),
         $('#course_start_date').val(),
         $('#course_end_date').val(),
         $('#enrolment_start_date').val(),
         $('#enrolment_end_date').val(),
         $('#badge_id').val()
     ]
+
     const response = await fetch(GRAPHQL_ENDPOINT, {
         method: 'POST',
         headers: {
@@ -55,10 +56,10 @@ async function createCourse() {
             `,
             variables: {
                 object: {
-                    "title": course_title,
-                    "description": course_description,
-                    "start_date": course_start_date,
-                    "end_date": course_end_date,
+                    title,
+                    description,
+                    start_date,
+                    end_date,
                     enrolment_start_date,
                     enrolment_end_date,
                     badge_id
@@ -69,7 +70,7 @@ async function createCourse() {
 
     const { errors } = await response.json()
     if (errors) {
-        Swal({
+        Swal.fire({
             title: 'Error!',
             text: 'Failed to add course at the moment',
             icon: 'error'
@@ -77,7 +78,7 @@ async function createCourse() {
         return
     }
 
-    Swal({
+    Swal.fire({
         title: 'Course created!',
         text: 'The course has been successfully created',
         icon: 'success'
@@ -85,31 +86,27 @@ async function createCourse() {
         if (result.isDismissed || result.isConfirmed)
             location.reload()
     })
-
-
-const responseJson = await response.json()
-return responseJson
 }
 
 
 
 
-async function getDropdownOptions() {
-    const response = await fetch(GRAPHQL_ENDPOINT, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            authorization: getIdToken(),
-        },
-        body: JSON.stringify({
-            query: `
-                query {
-                    badge_id
-                }
-            `
-        })
-    })
+// async function getDropdownOptions() {
+//     const response = await fetch(GRAPHQL_ENDPOINT, {
+//         method: 'POST',
+//         headers: {
+//             'Content-Type': 'application/json',
+//             authorization: getIdToken(),
+//         },
+//         body: JSON.stringify({
+//             query: `
+//                 query {
+//                     badge_id
+//                 }
+//             `
+//         })
+//     })
 
-    const responseJson = await response.json()
-    return responseJson
-}
+//     const responseJson = await response.json()
+//     return responseJson
+// }
