@@ -22,7 +22,7 @@ const QUESTION_TYPES = {
   trueFalse: "2"
 }
 
-const generateQuestionCard = () => {
+const generateQuestionCard = question => {
   createQuiz.ensureQuestionTypes()
 
   const totalQuestions = $(HTML_ELEMENTS.questionBodyId).children().length
@@ -35,29 +35,39 @@ const generateQuestionCard = () => {
   // Setup change listener for question type dropdown
   const questionTypeDropdownElement = $(questionElement).find(HTML_ELEMENTS.questionTypeClass)[0]
   $(questionTypeDropdownElement).attr("onchange", `onQuestionTypeChange(this, ${totalQuestions})`)
-
-  // Setup dynamic options groups
-  const radioButtonElement = $(questionElement).find(HTML_ELEMENTS.radioButtonClass)[0]
-  $(radioButtonElement).attr("name", `question-${totalQuestions}`)
-  $(radioButtonElement).attr("checked", true)
+  $(questionTypeDropdownElement).val(question ? question.question_type_id : null)
 
   // Setup event listener for adding new options
   const addOptionButtonElement = $(questionElement).find(HTML_ELEMENTS.addOptionClass)[0]
   $(addOptionButtonElement).attr("onclick", `generateOption(this, ${totalQuestions})`)
 
+  if (question) {
+    // Setup question title, which will be the first input
+    const questionTitleElement = $(questionElement).find(HTML_ELEMENTS.inputClass)[0]
+    $(questionTitleElement).val(question.title)
+
+    question.question_options.forEach(option => 
+      generateOption(addOptionButtonElement, totalQuestions, { value: option.title, checked: option.is_answer }))
+  }
+  else {
+    // Setup dynamic options groups
+    generateOption(addOptionButtonElement, totalQuestions, { checked: true })
+  }
+
   $(HTML_ELEMENTS.questionBodyId).append(questionElement)
 }
 
-const generateOption = (element, questionNumber, defaultValue) => {
+const generateOption = (element, questionNumber, { checked = false, value = "", id = null } = {}) => {
   const parents = $(element).parents()
   const cardElement = parents[2]
 
   const optionInputElement = $($(HTML_ELEMENTS.optionInputTemplateId).html())
   const radioButtonElement = $(optionInputElement).find(HTML_ELEMENTS.radioButtonClass)[0]
   $(radioButtonElement).attr("name", `question-${questionNumber}`)
+  $(radioButtonElement).attr("checked", checked)
 
-  if (defaultValue)
-    $(optionInputElement).find(HTML_ELEMENTS.inputClass).val(defaultValue)
+  if (value)
+    $(optionInputElement).find(HTML_ELEMENTS.inputClass).val(value)
 
   const optionsElement = $(cardElement).find(HTML_ELEMENTS.optionsClass)[0]
   $(optionsElement).append(optionInputElement)
@@ -85,7 +95,7 @@ const onQuestionTypeChange = (element, questionNumber) => {
     })
 
     if (optionElements.length === 1)
-      generateOption($(cardElement).find(HTML_ELEMENTS.addOptionClass)[0], questionNumber, "False")
+      generateOption($(cardElement).find(HTML_ELEMENTS.addOptionClass)[0], questionNumber, { value: "False" })
   }
 }
 
@@ -234,22 +244,23 @@ const updateQuiz = {
 
     const responseJson = await response.json()
     this.quiz = responseJson.data.quiz_by_pk
-    
+
     this.updateQuestionInfoUi()
     this.updateQuestionsUi()
   },
 
   updateQuestionInfoUi: function () {
     if (!this.quiz) return
-    
+
     const questionInfoElement = $(HTML_ELEMENTS.questionInfoClass)
     $(questionInfoElement).find(HTML_ELEMENTS.quizTitleId).val(this.quiz.title),
-    $(questionInfoElement).find(HTML_ELEMENTS.sectionSelectId).val(this.quiz.section_id),
-    $(questionInfoElement).find(HTML_ELEMENTS.timeLimitId).val(this.quiz.time_limit)
+      $(questionInfoElement).find(HTML_ELEMENTS.sectionSelectId).val(this.quiz.section_id),
+      $(questionInfoElement).find(HTML_ELEMENTS.timeLimitId).val(this.quiz.time_limit)
   },
 
   updateQuestionsUi: function () {
     if (!this.quiz) return
+    this.quiz.questions.forEach(question => generateQuestionCard(question))
   }
 }
 
