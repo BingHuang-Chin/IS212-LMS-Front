@@ -4,6 +4,8 @@ Fetch the values of the form submit and send it to hasura database using graphQL
 // Example starter JavaScript for disabling form submissions if there are invalid fields
 (() => {
     'use strict';
+    $('#header').load("/common/navbar.html");
+
 
     // Fetch all the forms we want to apply custom Bootstrap validation styles to
     const forms = document.querySelectorAll('.needs-validation');
