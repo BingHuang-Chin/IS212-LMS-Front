@@ -4,6 +4,8 @@ Fetch the values of the form submit and send it to hasura database using graphQL
 // Example starter JavaScript for disabling form submissions if there are invalid fields
 (() => {
     'use strict';
+    $('#header').load("/common/navbar.html");
+
 
     // Fetch all the forms we want to apply custom Bootstrap validation styles to
     const forms = document.querySelectorAll('.needs-validation');
@@ -51,8 +53,8 @@ async function createCourse({ course_title, description, course_start_date, cour
                     description: "", 
                     enrolment_end_date: "", 
                     enrolment_start_date: "", 
-                    start_date: "", end_date: ""}
-              )}
+                    start_date: "", end_date: ""
+                })}
             `,
             variables: {
                 course: {
