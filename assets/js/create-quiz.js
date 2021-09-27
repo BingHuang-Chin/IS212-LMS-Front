@@ -345,7 +345,7 @@ const onSubmitQuiz = async () => {
 
 const onOptionRemove = element => {
   const optionElements = $(element).parents()[1]
-  const optionsLeft = $(optionElements).children().length
+  const optionsLeft = $(optionElements).children().length  
 
   if (optionsLeft <= 1) {
     Swal.fire({
@@ -357,6 +357,14 @@ const onOptionRemove = element => {
   }
 
   const optionElement = $(element).parents()[0]
+  const optionId = parseInt($(optionElement).find(HTML_ELEMENTS.uidInputClass).val())
+  const queryName = `_del_option_${updateQuiz.queuedDeletionQuery.length}`
+  updateQuiz.queuedDeletionQuery += `
+    ${queryName}: delete_question_option_by_pk(id: ${optionId}) {
+      id
+    }
+  `
+
   $(optionElement).remove()
 }
 
