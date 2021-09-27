@@ -198,6 +198,47 @@ const createQuiz = {
   }
 }
 
+const updateQuiz = {
+  quiz: null,
+
+  getQuiz: async function (quizId) {
+    const response = await fetch(GRAPHQL_ENDPOINT, {
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json',
+        'authorization': `Bearer ${getIdToken()}`,
+      },
+      body: JSON.stringify({
+        query: `
+          query {
+            quiz_by_pk(id: ${quizId}) {
+              id
+              title
+              time_limit
+              section_id
+              questions {
+                id
+                title
+                question_type_id
+                question_options {
+                  id
+                  title
+                  is_answer
+                }
+              }
+            }
+          }
+        `
+      })
+    })
+
+    const responseJson = await response.json()
+    this.quiz = responseJson.data.quiz_by_pk
+
+    console.log(this.quiz)
+  }
+}
+
 const onCreateQuiz = async () => {
   const questionInfo = getQuestionInformationData()
   const questions = getQuestionsData()
@@ -254,6 +295,13 @@ const getOptionsData = (element) => {
 
 $(document).ready(async () => {
   ensureAuthenticated()
+
+  const params = new URLSearchParams(window.location.search)
+  const quizId = params.get("quiz")
+  if (quizId) {
+    await updateQuiz.getQuiz(quizId)
+    return
+  }
 
   await createQuiz.getQuestionTypes()
   generateQuestionCard()
