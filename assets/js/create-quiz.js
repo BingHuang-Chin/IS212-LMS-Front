@@ -458,7 +458,7 @@ const getQuestionUpdateQuery = ({ data }) => {
       || originalQuestion.title != question.title) {
       query += `
         ${queryName}: update_question_by_pk(pk_columns: {id: ${originalQuestion.id}}, _set: {
-          question_type_id: ${question.question_type_id}},
+          question_type_id: ${question.question_type_id},
           title: "${question.title}"
         }) {
           id
