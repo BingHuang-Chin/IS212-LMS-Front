@@ -77,6 +77,7 @@ const generateOption = (element, questionNumber, { checked = false, value = "", 
   if (value)
     $(optionInputElement).find(HTML_ELEMENTS.inputClass).val(value)
 
+  // Setup hidden input to contain uid
   if (id) {
     const uidInputElement = $($(HTML_ELEMENTS.hiddenInputTemplateId).html())
     $(uidInputElement).val(id)
