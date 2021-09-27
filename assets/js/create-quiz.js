@@ -1,3 +1,5 @@
+const GRAPHQL_ENDPOINT = "http://localhost:8080/v1/graphql"
+
 const HTML_ELEMENTS = {
   addOptionClass: ".add-option",
   optionsClass: ".options",
@@ -104,7 +106,7 @@ const createQuiz = {
   },
 
   getQuestionTypes: async function () {
-    const response = await fetch("http://localhost:8080/v1/graphql", {
+    const response = await fetch(GRAPHQL_ENDPOINT, {
       method: "POST",
       headers: {
         'Content-Type': 'application/json',
@@ -136,7 +138,7 @@ const createQuiz = {
   },
 
   postQuiz: async function (quizData) {
-    const response = await fetch("http://localhost:8080/v1/graphql", {
+    const response = await fetch(GRAPHQL_ENDPOINT, {
       method: "POST",
       headers: {
         'Content-Type': 'application/json',
