@@ -17,7 +17,7 @@ Fetch the values of the form submit and send it to hasura database using graphQL
                 event.stopPropagation();
             }
             else {
-                addCourse()
+                createCourse()
             }
             form.classList.add('was-validated');
         }, false);
@@ -43,7 +43,7 @@ async function createCourse() {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'authorization': `Bearer ${myadminsecretkey}`,
+            'authorization': getIdToken(),
         },
         body: JSON.stringify({
             query: `
@@ -90,4 +90,24 @@ const responseJson = await response.json()
 return responseJson.data.courseCreate
 }
 
-createCourse()
+
+
+
+async function getDropdownOptions() {
+    const response = await fetch(GRAPHQL_ENDPOINT, {
+        method = "POST",
+        headers: {
+            'Content-Type': 'application/json',
+            authorization: getIdToken(),
+        },
+        body: JSON.stringify({
+            query: `
+                query {
+                    badge_id
+                }
+            `
+        })
+    })
+
+    const responseJson = await response.json()
+}
