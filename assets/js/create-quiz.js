@@ -282,6 +282,42 @@ const updateQuiz = {
 
   updateQuestionsUi: function () {
     this.quiz.questions.forEach(question => generateQuestionCard(question))
+  },
+
+  modifyQuiz: async function(query) {
+    const response = await fetch(GRAPHQL_ENDPOINT, {
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json',
+        'authorization': getIdToken(),
+      },
+      body: JSON.stringify({
+        query: `
+          mutation {
+            ${query}
+          }        
+        `
+      })
+    })
+
+    const { errors } = await response.json()
+    if (errors) {
+      Swal.fire({
+        title: 'Error!',
+        text: 'Quiz could not be updated at this time.',
+        icon: 'error'
+      })
+      return
+    }
+
+    Swal.fire({
+      title: 'Quiz updated!',
+      text: 'The quiz has been successfully updated',
+      icon: 'success'
+    }).then(result => {
+      if (result.isDismissed || result.isConfirmed)
+        location.reload()
+    })
   }
 }
 
@@ -297,7 +333,7 @@ const onSubmitQuiz = async () => {
     await createQuiz.postQuiz(quizData)
   else {
     const updateQueries = getQuestionUpdateQuery(questions)
-    console.log(updateQueries)
+    updateQuiz.modifyQuiz(updateQueries)
   }
 }
 
@@ -344,7 +380,9 @@ const getQuestionsData = () => {
     if (updateQuiz.quiz) {
       // questionId will be appeneded to the last element, we will retrieve from the last element in find
       const questionId = parseInt($(cardElement).find(HTML_ELEMENTS.uidInputClass).last().val())
-      question = { ...question, id: questionId }
+
+      if (!isNaN(questionId))
+        question = { ...question, id: questionId }
     }
 
     questionsData.push(question)
@@ -365,7 +403,9 @@ const getOptionsData = (element) => {
 
       if (updateQuiz.quiz) {
         const optionId = parseInt($(option).find(HTML_ELEMENTS.uidInputClass).val())
-        optionData = { ...optionData, id: optionId }
+
+        if (!isNaN(optionId))
+          optionData = { ...optionData, id: optionId }
       }
 
       optionsData.push(optionData)
@@ -381,7 +421,31 @@ const getQuestionUpdateQuery = ({ data }) => {
   data.forEach(question => {
     const originalQuestion = orignalQuizState.find(q => q.id == question.id)
     if (!originalQuestion) {
-      // TODO: Add new questions here
+      let newOptionsQuery = ""
+      question.question_options.data.forEach((option, index) => {
+        const comma = index === question.question_options.data.length - 1 ? "" : ","
+        newOptionsQuery += `
+          {
+            is_answer: ${option.is_answer},
+            title: "${option.title}"
+          }${comma}
+        `
+      })
+      
+      query += `
+        insert_question_one(object: {
+          question_type_id: ${question.question_type_id},
+          quiz_id: ${updateQuiz.quiz.id},
+          title: "${question.title}",
+          question_options: {
+            data: [
+              ${newOptionsQuery}
+            ]
+          }
+        }) {
+          id
+        }
+      `
       return
     }
 
