@@ -226,6 +226,8 @@ const createQuiz = {
 const updateQuiz = {
   quiz: null,
 
+  queuedDeletionQuery: "",
+
   getQuiz: async function (quizId) {
     const response = await fetch(GRAPHQL_ENDPOINT, {
       method: "POST",
@@ -285,6 +287,9 @@ const updateQuiz = {
   },
 
   modifyQuiz: async function (query) {
+    if (!query && !this.queuedDeletionQuery) 
+      return
+
     const response = await fetch(GRAPHQL_ENDPOINT, {
       method: "POST",
       headers: {
@@ -295,6 +300,7 @@ const updateQuiz = {
         query: `
           mutation {
             ${query}
+            ${this.queuedDeletionQuery}
           }        
         `
       })
@@ -333,7 +339,6 @@ const onSubmitQuiz = async () => {
     await createQuiz.postQuiz(quizData)
   else {
     const updateQueries = getQuestionUpdateQuery(questions)
-    console.log(updateQueries)
     updateQuiz.modifyQuiz(updateQueries)
   }
 }
