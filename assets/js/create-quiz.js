@@ -14,7 +14,8 @@ const HTML_ELEMENTS = {
   questionClass: ".question",
   quizTitleId: "#quiz-title",
   sectionSelectId: "#section-id",
-  timeLimitId: "#time-limit"
+  timeLimitId: "#time-limit",
+  submitQuizId: "#submit-quiz"
 }
 
 const QUESTION_TYPES = {
@@ -333,6 +334,7 @@ $(document).ready(async () => {
   const quizId = params.get("quiz")
   if (quizId) {
     await updateQuiz.getQuiz(quizId)
+    $(HTML_ELEMENTS.submitQuizId).text("Update Quiz")
     return
   }
 
