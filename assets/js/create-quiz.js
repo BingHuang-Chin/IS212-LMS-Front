@@ -271,7 +271,7 @@ const updateQuiz = {
   }
 }
 
-const onCreateQuiz = async () => {
+const onSubmitQuiz = async () => {
   const questionInfo = getQuestionInformationData()
   const questions = getQuestionsData()
   const quizData = {
