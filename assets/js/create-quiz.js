@@ -234,8 +234,22 @@ const updateQuiz = {
 
     const responseJson = await response.json()
     this.quiz = responseJson.data.quiz_by_pk
+    
+    this.updateQuestionInfoUi()
+    this.updateQuestionsUi()
+  },
 
-    console.log(this.quiz)
+  updateQuestionInfoUi: function () {
+    if (!this.quiz) return
+    
+    const questionInfoElement = $(HTML_ELEMENTS.questionInfoClass)
+    $(questionInfoElement).find(HTML_ELEMENTS.quizTitleId).val(this.quiz.title),
+    $(questionInfoElement).find(HTML_ELEMENTS.sectionSelectId).val(this.quiz.section_id),
+    $(questionInfoElement).find(HTML_ELEMENTS.timeLimitId).val(this.quiz.time_limit)
+  },
+
+  updateQuestionsUi: function () {
+    if (!this.quiz) return
   }
 }
 
