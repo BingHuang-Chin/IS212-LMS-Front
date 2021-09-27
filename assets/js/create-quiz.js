@@ -105,7 +105,7 @@ const createQuiz = {
     throw new Error("No question types loaded.")
   },
 
-  getQuestionTypes: async function () {
+  getDropdownOptions: async function () {
     const response = await fetch(GRAPHQL_ENDPOINT, {
       method: "POST",
       headers: {
@@ -296,6 +296,8 @@ const getOptionsData = (element) => {
 $(document).ready(async () => {
   ensureAuthenticated()
 
+  await createQuiz.getDropdownOptions()
+
   const params = new URLSearchParams(window.location.search)
   const quizId = params.get("quiz")
   if (quizId) {
@@ -303,6 +305,5 @@ $(document).ready(async () => {
     return
   }
 
-  await createQuiz.getQuestionTypes()
   generateQuestionCard()
 })
