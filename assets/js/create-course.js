@@ -96,8 +96,11 @@ async function getDropdownOptions() {
         return
     }
 
-    for (const option in data.badge) {
-        $ = `<option value="${option.id}>${option.title}</option>`
+    console.log(data.badge)
+    for (const option of data.badge) {
+        console.log(option)
+        const getDropdownList = `<option value="${option.id}">${option.title}</option>`
+        $('#badge_id').append(getDropdownList)
         }
 }
 
