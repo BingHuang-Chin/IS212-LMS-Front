@@ -43,7 +43,7 @@ async function createCourse() {
             }
         })
     })
-
+    
     const { errors } = await response.json()
     if (errors) {
         Swal.fire({
@@ -96,9 +96,7 @@ async function getDropdownOptions() {
         return
     }
 
-    console.log(data.badge)
     for (const option of data.badge) {
-        console.log(option)
         const getDropdownList = `<option value="${option.id}">${option.title}</option>`
         $('#badge_id').append(getDropdownList)
         }
