@@ -346,6 +346,10 @@ const onSubmitQuiz = async () => {
   }
 }
 
+const onCancel = () => {
+  window.history.back()
+}
+
 const onOptionRemove = element => {
   const optionElements = $(element).parents()[1]
   const optionsLeft = $(optionElements).children().length
