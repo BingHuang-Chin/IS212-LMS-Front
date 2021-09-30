@@ -57,7 +57,7 @@
 
           <div class="container px-0 mb-4">
             <label class="form-label">Question</label>
-            <input type="text" class="form-control" placeholder="What colors does Singapore flag has?" />
+            <input type="text" class="question-input form-control" placeholder="What colors does Singapore flag has?" />
           </div>
 
           <!-- This should be dynamic depending on the question type -->
@@ -77,19 +77,14 @@
     </template>
 
     <template id="option-input-template">
-      <div class="container d-flex align-items-center mt-2">
-        <input class="form-check-input my-0 me-3" type="radio">
-        <input type="text" class="form-control" placeholder="Please enter an option" />
+      <div class="option container d-flex align-items-center mt-2">
+        <input class="option-radio form-check-input my-0 me-3" type="radio">
+        <input type="text" class="option-input form-control" placeholder="Please enter an option" />
         <button class="btn btn-outline-danger ms-3" type="button" onclick="onOptionRemove(this)">
           <i class="far fa-trash-alt"></i>
         </button>
       </div>
     </template>
-
-    <template id="hidden-input-template">
-      <input type="hidden" class="uid" />
-    </template>
-
 
     <!-- Main UI displayed to users -->
     <div class="container py-4">
