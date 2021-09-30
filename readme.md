@@ -7,7 +7,7 @@ This repository requires you to have [vercel](https://vercel.com/cli) installed.
 Before proceeding, you are required to create an account at [here](https://vercel.com/login). Once done, you are ready to continue.
 ```sh
 # Access the cloned project
-cd IS212-LMS-Back
+cd IS212-LMS-Front
 
 # Run the webserver in development mode
 vercel dev
