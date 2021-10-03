@@ -146,11 +146,11 @@ const createQuiz = {
       },
       body: JSON.stringify({
         query: `
-          mutation MyMutation($object: quiz_insert_input!) {
+          mutation ($object: quiz_insert_input!) {
             insert_quiz_one(object: $object) {
               id
             }
-          }        
+          }
         `,
         variables: {
           object: quizData
@@ -200,8 +200,6 @@ const createQuiz = {
 
 const updateQuiz = {
   quiz: null,
-
-  queuedDeletionQuery: "",
 
   getQuiz: async function (quizId) {
     const response = await fetch(GRAPHQL_ENDPOINT, {
@@ -261,10 +259,7 @@ const updateQuiz = {
     this.quiz.questions.forEach(question => generateQuestionCard(question))
   },
 
-  modifyQuiz: async function (query) {
-    if (!query && !this.queuedDeletionQuery)
-      return
-
+  modifyQuiz: async function (quizData) {
     const response = await fetch(GRAPHQL_ENDPOINT, {
       method: "POST",
       headers: {
@@ -273,11 +268,15 @@ const updateQuiz = {
       },
       body: JSON.stringify({
         query: `
-          mutation {
-            ${query}
-            ${this.queuedDeletionQuery}
-          }        
-        `
+          mutation($object: UpdateQuizInput!) {
+            updateQuiz(object: $object) {
+              hello
+            }
+          }
+        `,
+        variables: {
+          object: quizData
+        }
       })
     })
 
@@ -312,11 +311,8 @@ const onSubmitQuiz = async () => {
 
   if (!updateQuiz.quiz)
     await createQuiz.postQuiz(quizData)
-  else {
-    const updatedQuestionInfo = getQuestionInfoUpdateQuery(questionInfo)
-    const updatedQuestions = getQuestionUpdateQuery(questions)
-    updateQuiz.modifyQuiz(updatedQuestionInfo.concat(updatedQuestions))
-  }
+  else
+    await updateQuiz.modifyQuiz({ ...quizData, id: updateQuiz.quiz.id })
 }
 
 const onCancel = () => {
@@ -337,14 +333,6 @@ const onOptionRemove = element => {
   }
 
   const optionElement = UiElements.findOneFromChild(element, UiElements.optionContainerClass)
-  const optionId = parseInt(UiElements.findOneFromParent(optionElement, UiElements.optionUidClass).val())
-  const queryName = `_del_option_${updateQuiz.queuedDeletionQuery.length}`
-  updateQuiz.queuedDeletionQuery += `
-    ${queryName}: delete_question_option_by_pk(id: ${optionId}) {
-      id
-    }
-  `
-
   $(optionElement).remove()
 }
 
@@ -352,8 +340,8 @@ const getQuestionInformationData = () => {
   const questionInfoElement = $(UiElements.questionInfoCardClass)
   const [title, section_id, time_limit] = [
     $(questionInfoElement).find(UiElements.quizTitleId).val(),
-    $(questionInfoElement).find(UiElements.sectionSelectId).val(),
-    $(questionInfoElement).find(UiElements.sectionSelectId).val()
+    parseInt($(questionInfoElement).find(UiElements.sectionSelectId).val()),
+    parseInt($(questionInfoElement).find(UiElements.sectionSelectId).val())
   ]
 
   return { title, section_id, time_limit }
@@ -405,117 +393,6 @@ const getOptionsData = (element) => {
     })
 
   return { data: optionsData }
-}
-
-const getQuestionInfoUpdateQuery = (questionInfo) => {
-  let query = ""
-  const { title, section_id, time_limit } = updateQuiz.quiz
-
-  if (questionInfo.title != title
-    || questionInfo.section_id != section_id
-    || questionInfo.time_limit != time_limit) {
-    query += `
-      update_quiz_by_pk(pk_columns: {id: ${updateQuiz.quiz.id}}, _set: {
-        section_id: ${questionInfo.section_id},
-        time_limit: ${questionInfo.time_limit},
-        title: "${questionInfo.title}"
-      }) {
-        id
-      }
-  `
-  }
-
-  return query
-}
-
-const getQuestionUpdateQuery = ({ data }) => {
-  let query = ""
-  const orignalQuizState = updateQuiz.quiz.questions
-
-  data.forEach((question, index) => {
-    let queryName = `_question_${index}`
-    const originalQuestion = orignalQuizState.find(q => q.id == question.id)
-
-    if (!originalQuestion) {
-      let newOptionsQuery = ""
-      question.question_options.data.forEach((option, index) => {
-        const comma = index === question.question_options.data.length - 1 ? "" : ","
-        newOptionsQuery += `
-          {
-            is_answer: ${option.is_answer},
-            title: "${option.title}"
-          }${comma}
-        `
-      })
-
-      query += `
-        ${queryName}: insert_question_one(object: {
-          question_type_id: ${question.question_type_id},
-          quiz_id: ${updateQuiz.quiz.id},
-          title: "${question.title}",
-          question_options: {
-            data: [
-              ${newOptionsQuery}
-            ]
-          }
-        }) {
-          id
-        }
-      `
-      return
-    }
-
-    query += getOptionUpdateQuery(originalQuestion.id, question.question_options, originalQuestion.question_options)
-
-    if (originalQuestion.question_type_id != question.question_type_id
-      || originalQuestion.title != question.title) {
-      query += `
-        ${queryName}: update_question_by_pk(pk_columns: {id: ${originalQuestion.id}}, _set: {
-          question_type_id: ${question.question_type_id},
-          title: "${question.title}"
-        }) {
-          id
-        }
-      `
-    }
-  })
-
-  return query
-}
-
-const getOptionUpdateQuery = (questionId, { data }, originalOptions) => {
-  let query = ""
-
-  data.forEach((option, index) => {
-    const queryName = `_option_${questionId}_${index}`
-    const originalOption = originalOptions.find(o => o.id == option.id)
-    if (!originalOption) {
-      query += `
-        ${queryName}: insert_question_option_one(object: {
-          is_answer: ${option.is_answer},
-          question_id: ${questionId},
-          title: "${option.title}"
-        }) {
-          id
-        }
-      `
-      return
-    }
-
-    if (originalOption.is_answer != option.is_answer
-      || originalOption.title != option.title) {
-      query += `
-        ${queryName}: update_question_option_by_pk(pk_columns: {id: ${originalOption.id}}, _set: {
-          title: "${option.title}",
-          is_answer: ${option.is_answer}
-        }) {
-          id
-        }
-      `
-    }
-  })
-
-  return query
 }
 
 $(document).ready(async () => {
