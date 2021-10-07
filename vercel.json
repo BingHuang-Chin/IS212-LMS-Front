@@ -1,6 +1,10 @@
 {
   "routes": [
     {
+      "src": "/common/(.*)",
+      "dest": "/common/$1"
+    },
+    {
       "src": "/pages/(.*)",
       "dest": "/pages/$1.html"
     },
