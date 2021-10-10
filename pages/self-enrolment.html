@@ -23,14 +23,20 @@
         } */
 
         .detail {
-            width: 50%;
-            height: 100px;
             border: 3px solid black;
+            float: left;
+            margin: 0 5px;
+            max-width: 450px;
+            width: 100%;
         }
 
         .detail:after {
             display: block;
             padding-bottom: 100%;
+        }
+
+        .btn {
+            float: right;
         }
   </style>
 </head>
@@ -57,6 +63,7 @@
                 Course Start Date <br>
                 Course End Date 
             </p>
+            <button class="btn btn-light me-4" type="submit" id="enrol1">Enrol</button>
           </div>
 
           <div class="detail mb-5 col-sm-7">
@@ -66,6 +73,7 @@
                 Course Start Date <br>
                 Course End Date 
             </p>
+            <button class="btn btn-light me-4" type="submit" id="enrol2">Enrol</button>
           </div>
 
           <div class="detail mb-5 col-sm-7">
@@ -75,6 +83,7 @@
                 Course Start Date <br>
                 Course End Date 
             </p>
+            <button class="btn btn-light me-4" type="submit" id="enrol3">Enrol</button>
           </div>
 
           <div class="detail mb-5 col-sm-7">
@@ -84,13 +93,9 @@
                 Course Start Date <br>
                 Course End Date 
             </p>
+            <button class="btn btn-light me-4" type="submit" id="enrol4">Enrol</button>
           </div>
-
-          <div class="text-left">
-            <button class="btn btn-light me-4" type="submit" id="enrol">Enrol</button>
-          </div>
-
-      
+    
         </form>
       </div>
     </div>
