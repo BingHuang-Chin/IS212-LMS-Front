@@ -1,6 +1,7 @@
 const GRAPHQL_ENDPOINT = "http://localhost:8080/v1/graphql"
 $('#header').load("/common/navbar.html");
 
+
 async function getClasses() {
     const response = await fetch(GRAPHQL_ENDPOINT, {
         method: 'POST',
@@ -15,6 +16,7 @@ async function getClasses() {
                         id
                         title
                         classes {
+                            name
                             class_size
                             class_start_time
                             class_end_time
@@ -41,25 +43,32 @@ async function getClasses() {
         })
         return
     }
-    console.log(data.course)
-
     for (const classes of data.course) {
-        console.log(classes.classes)
+        for (const single_class of classes.classes)  {
+            cards = `     
+            <div class="card ms-3 me-3 mt-3 mb-3 col-md-4">
+                <div class="card-body">
+                    <h5 class="card-title">${classes.title}</h5>
+                    <p class="card-text"><strong>Class schedule: ${single_class.name}</strong>
+                    <p class="card-text"><strong>Class Size: ${single_class.class_size}</strong>
+                    <p class="card-text"><strong>Course start date: ${single_class.start_date}</strong>
+                    <p class="card-text"><strong>Course end date: ${single_class.end_date}</strong>
+                    <p class="card-text"><strong>Class start time: ${single_class.class_start_time}</strong>
+                    <p class="card-text"><strong>Class end time: ${single_class.class_end_time}</strong>
+                    <p class="card-text"><strong>Trainer: ${getTrainerName(single_class.trainer)}</strong>
+                </div>
+            </div>`
+            document.getElementById("cardColumns").innerHTML += cards
+        }
     }
+
 }
 
 getClasses()
 
-// for (record of records) {
-//     cards = `     
-//     <div class="card">
-//         <img src="../api/images/${record.others.image}" class="card-img-top" alt="...">
-//         <div class="card-body">
-//             <h5 class="card-title">${record.bio.name}</h5>
 
-//             <p class="card-text"><strong>${record.movie.title} (${record.movie.year})</strong>
-//             </br><i>${record.movie.description}<i></p>
-//         </div>
-//     </div>`
-//     document.getElementById("cardColumns").innerHTML += cards
-// }
+function getTrainerName(input) {
+    for (i in input) {
+        return input[i]
+    }
+}
