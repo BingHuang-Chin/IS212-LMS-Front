@@ -12,19 +12,9 @@ async function getClasses() {
             query: `
                 query {
                     course {
+                        id
                         title
                         description
-                        classes {
-                            name
-                            class_size
-                            class_start_time
-                            class_end_time
-                            start_date
-                            end_date
-                            trainer {
-                                name
-                            }
-                        }
                     }
                 }
             `
@@ -42,11 +32,10 @@ async function getClasses() {
         })
         return
     }
-
     unique_course = []
-    for (const classes of data.course) {
-        for (const single_class of classes.classes)  {
-            cards = `     
+    for (const courses in data.course) {
+        console.log(courses)
+        cards = `     
             <div class="card ms-3 me-3 mt-3 mb-3 col-md-4">
                 <div class="card-body">
                     <h5 class="card-title">${classes.title}</h5>
@@ -59,8 +48,7 @@ async function getClasses() {
                     <p class="card-text"><strong>Trainer: ${getTrainerName(single_class.trainer)}</strong>
                 </div>
             </div>`
-            document.getElementById("cardColumns").innerHTML += cards
-        }
+        document.getElementById("cardColumns").innerHTML += cards
     }
 
 }

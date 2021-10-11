@@ -47,8 +47,7 @@ async function getClasses() {
             cards = `     
             <div class="card ms-3 me-3 mt-3 mb-3 col-md-4">
                 <div class="card-body">
-                    <h5 class="card-title">${classes.title}</h5>
-                    <p class="card-text"><strong>Class schedule: ${single_class.name}</strong>
+                    <h5 class="card-title mb-3"><strong><u>${single_class.name}</u></strong></h5>
                     <p class="card-text"><strong>Class Size: ${single_class.class_size}</strong>
                     <p class="card-text"><strong>Course start date: ${single_class.start_date}</strong>
                     <p class="card-text"><strong>Course end date: ${single_class.end_date}</strong>
