@@ -12,8 +12,8 @@ async function getClasses() {
             query: `
                 query {
                     course {
-                        id
                         title
+                        description
                         classes {
                             name
                             class_size
@@ -42,6 +42,8 @@ async function getClasses() {
         })
         return
     }
+
+    unique_course = []
     for (const classes of data.course) {
         for (const single_class of classes.classes)  {
             cards = `     
