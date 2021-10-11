@@ -59,9 +59,7 @@ async function getClasses() {
             document.getElementById("cardColumns").innerHTML += cards
         }
     }
-
 }
-
 getClasses()
 
 

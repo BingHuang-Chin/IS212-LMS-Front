@@ -1,7 +1,7 @@
 const GRAPHQL_ENDPOINT = "http://localhost:8080/v1/graphql"
 $('#header').load("/common/navbar.html");
 
-async function getClasses() {
+async function getCourses() {
     const response = await fetch(GRAPHQL_ENDPOINT, {
         method: 'POST',
         headers: {
@@ -32,20 +32,13 @@ async function getClasses() {
         })
         return
     }
-    unique_course = []
-    for (const courses in data.course) {
-        console.log(courses)
+    for (const courses of data.course) {
         cards = `     
-            <div class="card ms-3 me-3 mt-3 mb-3 col-md-4">
+            <div class="card ms-3 me-3 mt-3 mb-3 col-md-3">
                 <div class="card-body">
-                    <h5 class="card-title">${classes.title}</h5>
-                    <p class="card-text"><strong>Class schedule: ${single_class.name}</strong>
-                    <p class="card-text"><strong>Class Size: ${single_class.class_size}</strong>
-                    <p class="card-text"><strong>Course start date: ${single_class.start_date}</strong>
-                    <p class="card-text"><strong>Course end date: ${single_class.end_date}</strong>
-                    <p class="card-text"><strong>Class start time: ${single_class.class_start_time}</strong>
-                    <p class="card-text"><strong>Class end time: ${single_class.class_end_time}</strong>
-                    <p class="card-text"><strong>Trainer: ${getTrainerName(single_class.trainer)}</strong>
+                <h5 class="card-title mb-3"><strong><u>${courses.title}</u></strong></h5>
+                <p class="card-text"><strong>Course description: ${courses.description}</strong>
+                <a href="/pages/assign-classes" class="card-link">View</a>
                 </div>
             </div>`
         document.getElementById("cardColumns").innerHTML += cards
@@ -53,7 +46,7 @@ async function getClasses() {
 
 }
 
-getClasses()
+getCourses()
 
 
 function getTrainerName(input) {
@@ -61,3 +54,4 @@ function getTrainerName(input) {
         return input[i]
     }
 }
+
