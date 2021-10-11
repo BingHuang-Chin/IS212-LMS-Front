@@ -1,7 +1,7 @@
 const GRAPHQL_ENDPOINT = "http://localhost:8080/v1/graphql"
 $('#header').load("/common/navbar.html");
 
-async function getClasses() {
+async function getClasses(id) {
     const response = await fetch(GRAPHQL_ENDPOINT, {
         method: 'POST',
         headers: {
@@ -10,22 +10,19 @@ async function getClasses() {
         },
         body: JSON.stringify({
             query: `
-                query {
-                    course {
-                        id
-                        classes {
-                            name
-                            class_size
-                            class_start_time
-                            class_end_time
-                            start_date
-                            end_date
-                            trainer {
-                                name
-                            }
-                        }
-                    }
+            query {
+                class(where: {course_id: {_eq: 40}}) {
+                  name
+                  class_size
+                  start_date
+                  end_date
+                  class_start_time
+                  class_end_time
+                  trainer {
+                    name
+                  }
                 }
+              }
             `
         })
     })
@@ -41,23 +38,22 @@ async function getClasses() {
         })
         return
     }
-
-    for (const classes of data.course) {
-        for (const single_class of classes.classes)  {
-            cards = `     
+    
+    for (const classes of data.class) {
+        cards = `
             <div class="card ms-3 me-3 mt-3 mb-3 col-md-4">
                 <div class="card-body">
-                    <h5 class="card-title mb-3"><strong><u>${single_class.name}</u></strong></h5>
-                    <p class="card-text"><strong>Class Size: ${single_class.class_size}</strong>
-                    <p class="card-text"><strong>Course start date: ${single_class.start_date}</strong>
-                    <p class="card-text"><strong>Course end date: ${single_class.end_date}</strong>
-                    <p class="card-text"><strong>Class start time: ${single_class.class_start_time}</strong>
-                    <p class="card-text"><strong>Class end time: ${single_class.class_end_time}</strong>
-                    <p class="card-text"><strong>Trainer: ${getTrainerName(single_class.trainer)}</strong>
+                    <h5 class="card-title mb-3"><strong><u>${classes.name}</u></strong></h5>
+                    <p class="card-text"><strong>Class Size: ${classes.class_size}</strong>
+                    <p class="card-text"><strong>Course start date: ${classes.start_date}</strong>
+                    <p class="card-text"><strong>Course end date: ${classes.end_date}</strong>
+                    <p class="card-text"><strong>Class start time: ${classes.class_start_time}</strong>
+                    <p class="card-text"><strong>Class end time: ${classes.class_end_time}</strong>
+                    <p class="card-text"><strong>Trainer: ${getTrainerName(classes.trainer)}</strong>
                 </div>
             </div>`
-            document.getElementById("cardColumns").innerHTML += cards
-        }
+        document.getElementById("cardColumns").innerHTML += cards
+
     }
 }
 getClasses()
