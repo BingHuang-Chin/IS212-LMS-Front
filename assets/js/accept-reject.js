@@ -41,4 +41,5 @@ async function accept(){
     console.log(await response.json())
 }
 
+console.log("hi")
 accept()
