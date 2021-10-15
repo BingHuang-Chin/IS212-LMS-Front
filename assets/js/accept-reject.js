@@ -41,6 +41,4 @@ async function accept(){
     console.log(await response.json())
 }
 
-xxcxc
-
 accept()
