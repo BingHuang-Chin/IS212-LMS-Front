@@ -1,6 +1,46 @@
 const GRAPHQL_ENDPOINT = "http://localhost:8080/v1/graphql"
 $('#header').load("/common/navbar.html");
 
+
+async function getLearners() {
+    const response = await fetch(GRAPHQL_ENDPOINT, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'authorization': getIdToken(),
+        },
+        body: JSON.stringify({
+            query: `
+                query {
+                    learner {
+                    id
+                    name
+                  }
+                }
+            `
+        })
+    })
+
+    const { errors, data } = await response.json()
+    if (errors) {
+        Swal.fire({
+            title: 'Error!',
+            text: 'Failed to retrieve learners!',
+            icon: 'error'
+        }).then(result => {
+            if (result.isDismissed || result.isConfirmed)
+                location.reload()
+        })
+        return
+    }
+
+    for (const learner of data.learner) {
+        console.log(learner.name)
+    }
+}
+
+getLearners()
+
 async function getClasses() {
     const params = new URLSearchParams(window.location.search)
     const courseId = params.get("id")
@@ -61,6 +101,7 @@ async function getClasses() {
                         <p class="card-text"><strong>Class start time: ${classes.class_start_time}</strong>
                         <p class="card-text"><strong>Class end time: ${classes.class_end_time}</strong>
                         <p class="card-text"><strong>Trainer: ${getTrainerName(classes.trainer)}</strong>
+                        <>
                     </div>
                 </div>`
             $("#cardColumns").append(cards)
