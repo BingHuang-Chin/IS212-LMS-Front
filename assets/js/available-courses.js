@@ -33,7 +33,6 @@ async function getCourses() {
         return
     }
     for (const courses of data.course) {
-        console.log(courses.id)
         cards = `
             <div class="card ms-3 me-3 mt-3 mb-3 col-md-3">
                 <div class="card-body text-center">

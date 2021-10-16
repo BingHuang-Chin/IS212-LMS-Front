@@ -28,6 +28,7 @@ async function getClasses() {
             `
         })
     })
+
     const { errors, data } = await response.json()
     if (errors) {
         Swal.fire({
@@ -40,22 +41,31 @@ async function getClasses() {
         })
         return
     }
+    if (data.class.length <= 0) {
+        Swal.fire({
+            title: 'Error!',
+            text: 'There are no classes in this course!',
+            icon: 'error'
+        })
+    }
 
-    for (const classes of data.class) {
-        cards = `
-            <div class="card ms-3 me-3 mt-3 mb-3 col-md-4">
-                <div class="card-body">
-                    <h5 class="card-title mb-3"><strong><u>${classes.name}</u></strong></h5>
-                    <p class="card-text"><strong>Class Size: ${classes.class_size}</strong>
-                    <p class="card-text"><strong>Course start date: ${classes.start_date}</strong>
-                    <p class="card-text"><strong>Course end date: ${classes.end_date}</strong>
-                    <p class="card-text"><strong>Class start time: ${classes.class_start_time}</strong>
-                    <p class="card-text"><strong>Class end time: ${classes.class_end_time}</strong>
-                    <p class="card-text"><strong>Trainer: ${getTrainerName(classes.trainer)}</strong>
-                </div>
-            </div>`
-        document.getElementById("cardColumns").innerHTML += cards
+    else {
+        for (const classes of data.class) {
+            cards = `
+                <div class="card ms-3 me-3 mt-3 mb-3 col-md-4">
+                    <div class="card-body">
+                        <h5 class="card-title mb-3"><strong><u>${classes.name}</u></strong></h5>
+                        <p class="card-text"><strong>Class Size: ${classes.class_size}</strong>
+                        <p class="card-text"><strong>Course start date: ${classes.start_date}</strong>
+                        <p class="card-text"><strong>Course end date: ${classes.end_date}</strong>
+                        <p class="card-text"><strong>Class start time: ${classes.class_start_time}</strong>
+                        <p class="card-text"><strong>Class end time: ${classes.class_end_time}</strong>
+                        <p class="card-text"><strong>Trainer: ${getTrainerName(classes.trainer)}</strong>
+                    </div>
+                </div>`
+            document.getElementById("cardColumns").innerHTML += cards
 
+        }
     }
 }
 getClasses()
