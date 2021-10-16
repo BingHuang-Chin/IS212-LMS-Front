@@ -33,12 +33,13 @@ async function getCourses() {
         return
     }
     for (const courses of data.course) {
-        cards = `     
+        console.log(courses.id)
+        cards = `
             <div class="card ms-3 me-3 mt-3 mb-3 col-md-3">
-                <div class="card-body">
+                <div class="card-body text-center">
                 <h5 class="card-title mb-3"><strong><u>${courses.title}</u></strong></h5>
-                <p class="card-text"><strong>Course description: ${courses.description}</strong>
-                <a href="/pages/assign-classes" class="card-link">View</a>
+                <p class="card-text"><strong>Course description: ${courses.description}</strong></br></br>
+                <a href="/pages/assign-classes?id=${courses.id}" class="card-link">View classes</a>
                 </div>
             </div>`
         document.getElementById("cardColumns").innerHTML += cards

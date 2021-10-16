@@ -11,7 +11,7 @@ async function getClasses(id) {
         body: JSON.stringify({
             query: `
             query {
-                class(where: {course_id: {_eq: 40}}) {
+                class(where: {course_id: {_eq: ${id}}}) {
                   name
                   class_size
                   start_date
@@ -38,7 +38,7 @@ async function getClasses(id) {
         })
         return
     }
-    
+
     for (const classes of data.class) {
         cards = `
             <div class="card ms-3 me-3 mt-3 mb-3 col-md-4">
