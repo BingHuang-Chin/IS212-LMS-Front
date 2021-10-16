@@ -5,7 +5,7 @@ Fetch the values of the form submit and send it to hasura database using graphQL
 const GRAPHQL_ENDPOINT = "http://localhost:8080/v1/graphql"
 $('#header').load("/common/navbar.html");
 
-async function accept(){
+async function getcourses(){
     const [title, description, start_date, end_date] = [
         $('#course_title').val(),
         $('#description').val(),
@@ -17,7 +17,7 @@ async function accept(){
         method:'POST', 
         headers:{
             'Content-Type': 'application/json',
-            'authorization': getIdToken()
+            'authorization': getIdToken(),
         },
 
         body: JSON.stringify({
@@ -38,9 +38,26 @@ async function accept(){
         })
         
     })
+    
+    const dataset = await response.json()
+    console.log(dataset.data.course[0])
+    for(const courses of dataset.data.course){
+        cards = `
+        <div class="col-sm-4" id="pre"> 
+            <div class="card" style="width:400px">
+                <img class="card-img-top" src="/assets/images/jennie.jpeg" alt="Card image">
+                <div class="card-body">
+                <h4 class="card-title">${courses.title}</h4>
+                <p class="card-text">${courses.description}</p>
+                <a href="#" class="btn btn-primary">View Course</a>
+            </div>
+        </div>
+        
+        `
+        document.getElementById('cardcolumns').innerHTML+= cards
 
-    console.log(await response.json())
+    }
+
 }
 
-console.log("hi")
-accept()
+getcourses()
