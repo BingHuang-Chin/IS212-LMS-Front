@@ -1,7 +1,9 @@
 const GRAPHQL_ENDPOINT = "http://localhost:8080/v1/graphql"
 $('#header').load("/common/navbar.html");
 
-async function getClasses(id) {
+async function getClasses() {
+    const params = new URLSearchParams(window.location.search)
+    const courseId = params.get("id")
     const response = await fetch(GRAPHQL_ENDPOINT, {
         method: 'POST',
         headers: {
@@ -11,7 +13,7 @@ async function getClasses(id) {
         body: JSON.stringify({
             query: `
             query {
-                class(where: {course_id: {_eq: ${id}}}) {
+                class(where: {course_id: {_eq: ${courseId}}}) {
                   name
                   class_size
                   start_date
