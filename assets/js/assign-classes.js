@@ -63,7 +63,7 @@ async function getClasses() {
                         <p class="card-text"><strong>Trainer: ${getTrainerName(classes.trainer)}</strong>
                     </div>
                 </div>`
-            document.getElementById("cardColumns").innerHTML += cards
+            $("#cardColumns").append(cards)
 
         }
     }
