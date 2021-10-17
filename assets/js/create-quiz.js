@@ -270,7 +270,8 @@ const updateQuiz = {
         query: `
           mutation($object: UpdateQuizInput!) {
             updateQuiz(object: $object) {
-              hello
+              status
+              message
             }
           }
         `,
