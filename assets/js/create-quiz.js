@@ -341,7 +341,7 @@ const getQuestionInformationData = () => {
   const [title, section_id, time_limit] = [
     $(questionInfoElement).find(UiElements.quizTitleId).val(),
     parseInt($(questionInfoElement).find(UiElements.sectionSelectId).val()),
-    parseInt($(questionInfoElement).find(UiElements.sectionSelectId).val())
+    parseInt($(questionInfoElement).find(UiElements.timeLimitId).val())
   ]
 
   return { title, section_id, time_limit }
