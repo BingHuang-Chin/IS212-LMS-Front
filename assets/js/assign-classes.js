@@ -1,5 +1,14 @@
 const GRAPHQL_ENDPOINT = "http://localhost:8080/v1/graphql"
 $('#header').load("/common/navbar.html");
+$(document).ready(function(){
+    $('#table').hide()
+   })
+
+// $("#table").css("display","none");
+    
+$("#showit").click(function(e){
+  $("#loader").css("display","inline-block");
+})
 
 
 async function getLearners() {
@@ -43,9 +52,6 @@ async function getLearners() {
 }
 
 getLearners()
-
-
-
 
 
 async function getClasses() {
@@ -99,21 +105,16 @@ async function getClasses() {
     else {
         for (const classes of data.class) {
             cards = `
-                <div class="card ms-3 me-3 mt-3 mb-3 col-md-4">
+                <div class="card mb-4">
                     <div class="card-body">
                         <h5 class="card-title mb-3"><strong><u>${classes.name}</u></strong></h5>
                         <p class="card-text"><strong>Class Size: ${classes.class_size}</strong></p>
-                        <p class="card-text"><strong>Course start date: ${classes.start_date}</strong></p>
-                        <p class="card-text"><strong>Course end date: ${classes.end_date}</strong></p>
+                        <p class="card-text"><strong>Class start date: ${classes.start_date}</strong></p>
+                        <p class="card-text"><strong>Class end date: ${classes.end_date}</strong></p>
                         <p class="card-text"><strong>Class start time: ${classes.class_start_time}</strong></p>
                         <p class="card-text"><strong>Class end time: ${classes.class_end_time}</strong></p>
                         <p class="card-text"><strong>Trainer: ${getTrainerName(classes.trainer)}</strong></p>
-                        <div class="dropdown">
-                            <button type="button" class="btn btn-secondary dropdown-toggle" id="dropdownMenuOffset" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-offset="10,20">
-                                View learners
-                            </button>
-                            <div class="dropdown-menu" id="dropdown1" aria-labelledby="dropdownMenuOffset"></div>
-                        </div>
+                        <button type="button" class="btn btn-secondary" onclick="showtable()">Assign learners to class</button>
                     </div>
                 </div>`
             $("#cardColumns").append(cards)
@@ -129,3 +130,15 @@ function getTrainerName(input) {
         return input[i]
     }
 }
+
+
+function showtable() {
+    $("#table").show();
+    }
+  
+// <div class="dropdown">
+// <button type="button" class="btn btn-secondary dropdown-toggle" id="dropdownMenuOffset" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-offset="10,20">
+//     View learners
+// </button>
+// <div class="dropdown-menu" id="dropdown1" aria-labelledby="dropdownMenuOffset"></div>
+// </div>

@@ -43,7 +43,6 @@ async function getCourses() {
             </div>`
         document.getElementById("cardColumns").innerHTML += cards
     }
-
 }
 
 getCourses()
