@@ -44,10 +44,15 @@ async function getLearners() {
     }
 
     for (const learner of data.learner) {
+        console.log(learner)
         list_learners = `
-            <a class="dropdown-item" value="${learner.name}">${learner.name}</a>
+            <tr>
+                <td>${learner.id}</td>
+                <td>${learner.name}</td>
+                <td><input type="checkbox" id="${learner.id}" value="${learner.id}"></td>
+            </tr>
         `
-        $("#dropdown1").append(list_learners)
+        $("#learnerDetails").append(list_learners)
     }
 }
 
@@ -114,11 +119,10 @@ async function getClasses() {
                         <p class="card-text"><strong>Class start time: ${classes.class_start_time}</strong></p>
                         <p class="card-text"><strong>Class end time: ${classes.class_end_time}</strong></p>
                         <p class="card-text"><strong>Trainer: ${getTrainerName(classes.trainer)}</strong></p>
-                        <button type="button" class="btn btn-secondary" onclick="showtable()">Assign learners to class</button>
+                        <button type="button" class="btn btn-secondary" onclick="showtable()">View available learners</button>
                     </div>
                 </div>`
             $("#cardColumns").append(cards)
-
         }
     }
 }
