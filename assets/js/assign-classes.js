@@ -4,12 +4,6 @@ $(document).ready(function(){
     $('#table').hide()
    })
 
-// $("#table").css("display","none");
-    
-$("#showit").click(function(e){
-  $("#loader").css("display","inline-block");
-})
-
 
 async function getLearners() {
     const response = await fetch(GRAPHQL_ENDPOINT, {

@@ -25,16 +25,18 @@
         <div class="col-4 mb-4 mt-4">
             <div id="cardColumns"></div>
         </div>
-        <div class="col-8">
-            <table class="table mt-4 m-0" id="table">
+        <div class="col-8" id="table">
+            <table class="table mt-4 m-0">
                 <thead>
                     <tr>
                         <th scope="col">Learner ID</th>
                         <th scope="col">Learner Name</th>
+                        <th scope="col"></th>
                       </tr>
                 </thead>
                 <tbody id="learnerDetails"></tbody>
             </table>
+            <button type="button" class="btn btn-secondary mt-4 float-end me-3" onclick="insertLearners()">Assign</button>
         </div>
     </div>
 
