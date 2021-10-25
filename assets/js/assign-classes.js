@@ -4,14 +4,25 @@ $(document).ready(function () {
     $('#table').hide()
 })
 
+let classID
 async function insertLearners() {
+    array = []
+    const params = new URLSearchParams(window.location.search)
+    const course_id = params.get("id")
+    const learners_id = $('#learnersID').val()
+    $("input:checkbox[name=learnersID]:checked").each(function () {
+        array.push($(this).val());
+    });
+    console.log(classID)
     const response = await fetch(GRAPHQL_ENDPOINT, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
             'authorization': getIdToken(),
         },
-        body: JSON.stringify({})
+        body: JSON.stringify({
+
+        })
     })
 }
 async function getLearners() {
@@ -47,12 +58,11 @@ async function getLearners() {
     }
 
     for (const learner of data.learner) {
-        console.log(learner)
         list_learners = `
             <tr>
                 <td>${learner.id}</td>
                 <td>${learner.name}</td>
-                <td><input type="checkbox" id="${learner.id}" value="${learner.id}"></td>
+                <td><input type="checkbox" name="learnersID" value="${learner.id}"></td>
             </tr>
         `
         $("#learnerDetails").append(list_learners)
@@ -123,7 +133,7 @@ async function getClasses() {
                         <p class="card-text"><strong>Class start time: ${classes.class_start_time}</strong></p>
                         <p class="card-text"><strong>Class end time: ${classes.class_end_time}</strong></p>
                         <p class="card-text"><strong>Trainer: ${getTrainerName(classes.trainer)}</strong></p>
-                        <button type="button" class="btn btn-secondary" onclick="showtable()">View available learners</button>
+                        <button type="button" class="btn btn-secondary" onclick="showtable(${classes.id})">View available learners</button>
                     </div>
                 </div>`
             $("#cardColumns").append(cards)
@@ -140,13 +150,12 @@ function getTrainerName(input) {
 }
 
 
-function showtable() {
+function showtable(input) {
+    classID = input
     $("#table").show();
 }
 
-// <div class="dropdown">
-// <button type="button" class="btn btn-secondary dropdown-toggle" id="dropdownMenuOffset" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-offset="10,20">
-//     View learners
-// </button>
-// <div class="dropdown-menu" id="dropdown1" aria-labelledby="dropdownMenuOffset"></div>
-// </div>
+//for code refactoring
+// function getEnrolmentDetails() {
+
+// }
