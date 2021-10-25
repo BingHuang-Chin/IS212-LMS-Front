@@ -1,10 +1,19 @@
 const GRAPHQL_ENDPOINT = "http://localhost:8080/v1/graphql"
 $('#header').load("/common/navbar.html");
-$(document).ready(function(){
+$(document).ready(function () {
     $('#table').hide()
-   })
+})
 
-
+async function insertLearners() {
+    const response = await fetch(GRAPHQL_ENDPOINT, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'authorization': getIdToken(),
+        },
+        body: JSON.stringify({})
+    })
+}
 async function getLearners() {
     const response = await fetch(GRAPHQL_ENDPOINT, {
         method: 'POST',
@@ -66,6 +75,7 @@ async function getClasses() {
             query: `
             query {
                 class(where: {course_id: {_eq: ${courseId}}}) {
+                  id
                   name
                   class_size
                   start_date
@@ -132,8 +142,8 @@ function getTrainerName(input) {
 
 function showtable() {
     $("#table").show();
-    }
-  
+}
+
 // <div class="dropdown">
 // <button type="button" class="btn btn-secondary dropdown-toggle" id="dropdownMenuOffset" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-offset="10,20">
 //     View learners
