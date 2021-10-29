@@ -31,6 +31,7 @@ async function getmaterials(){
                   chapter_name
                   course_id
                   course_link
+                  description
                 }
               }
               
@@ -41,20 +42,20 @@ async function getmaterials(){
     })
     const dataset = await response.json()
     const materials = dataset.data.course_materials
-    console.log(materials)
-
-    for(individual_materials of materials){
-        material_row = `
-        <h4>${individual_materials.chapter_name}</h4>
-                <div class="line"></div>
-        `
-        document.getElementById('bodycontent').innerHTML+= material_row
+    console.log(materials[0].description)
+    for(individual_materials of materials.reverse()){
+        material_row = 
+                        `<li>
+                                <a href="http://localhost:3000/pages/individual-chapter?mid=${individual_materials.course_link}">${individual_materials.chapter_name}</a>
+                        </li>`
+        document.getElementById('displaysidechapter').innerHTML+= material_row
 
     }
+    document.getElementById('coursetitle').innerHTML= materials[0].description
+
+     
 
 }
-
-// TODO display the chapers chronologically
 
 getmaterials()
 console.log("hi there")

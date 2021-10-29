@@ -43,14 +43,15 @@ async function getcourses(){
     const dataset = await response.json()
  
     console.log(dataset.data.course[1])
+    cards = ''
     for(const courses of dataset.data.course){
         console.log(courses.id)
-        cards = `
-        <div class="col-lg-3 col-md-6 mb-4 mb-lg-0">
+        cards += `
+        <div class="col-lg-3 col-md-6 mb-4">
         <!-- Card-->
-        <div class="card rounded shadow-sm border-0">
+        <div class="card rounded shadow-sm border-0 h-100">
         <div class="card-body p-4"><img src="https://bootstrapious.com/i/snippets/sn-cards/shoes-1_gthops.jpg" alt="" class="img-fluid d-block mx-auto mb-3">
-            <h5> <a href="http://localhost:3000/pages/course_content?id=${courses.id}" class="text-dark ">${courses.title}</a></h5>
+            <h5> <a  href="http://localhost:3000/pages/course_content?id=${courses.id}" class="text-dark ">${courses.title}</a></h5>
             <p class="small text-muted font-italic">${courses.description}</p>
             <ul class="list-inline small">
             <li class="list-inline-item m-0"><i class="fa fa-star text-success"></i></li>
@@ -63,9 +64,9 @@ async function getcourses(){
         </div>
         </div>
         `
-        document.getElementById('cardcolumns').innerHTML+= cards
-
+        
     }
+    document.getElementById('cardcolumns').innerHTML= cards 
 
 }
 
