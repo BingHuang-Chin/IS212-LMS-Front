@@ -6,19 +6,32 @@ $(document).ready(function () {
 
 let class_id
 let trainer_id
+let status_id = 1
 async function enrolLearnersAndTrainers() {
-    array = []
+    learners_array = []
+    object_array = []
+
     const params = new URLSearchParams(window.location.search)
     const course_id = params.get("id")
+
     $("input:checkbox[name=learnersID]:checked").each(function () {
-        array.push($(this).val());
+        learners_array.push($(this).val());
     });
-    console.log(trainer_id)
-    console.log(class_id)
-    for (i in array) {
-        learner
+
+    trainer_id = $("input:radio[name=trainersID]:checked").val()
+
+    for (i in learners_array) {
+        const object = {}
+        object['learner_id'] = parseInt(learners_array[i])
+        object['course_id'] = parseInt(course_id)
+        object['trainer_id'] = parseInt(trainer_id)
+        object['status_id'] = parseInt(status_id)
+        object['class_id'] = parseInt(class_id)
+        object_array.push(object)
     }
-    final_array = []
+    console.log(object_array)
+
+
     const response = await fetch(GRAPHQL_ENDPOINT, {
         method: 'POST',
         headers: {
@@ -34,19 +47,30 @@ async function enrolLearnersAndTrainers() {
               }            
             `,
             variables: {
-                "objects": [
-                    {
-                        "learner_id": 1,
-                        course_id,
-                        trainer_id,
-                        "status_id": 1,
-                        class_id
-                    }
-                ]
+                "objects": object_array
             }
         })
     })
+    const { errors } = await response.json()
+    if (errors) {
+        Swal.fire({
+            title: 'Error!',
+            text: 'Failed to add learners and trainer at the moment',
+            icon: 'error'
+        })
+        return
+    }
+
+    Swal.fire({
+        title: 'Learners and trainer added!',
+        text: 'Learners and Trainer has been successfully added',
+        icon: 'success'
+    }).then(result => {
+        if (result.isDismissed || result.isConfirmed)
+            location.reload()
+    })
 }
+
 async function getLearners() {
     const response = await fetch(GRAPHQL_ENDPOINT, {
         method: 'POST',
@@ -132,7 +156,7 @@ async function getTrainers() {
             <tr>
                 <td>${trainer.id}</td>
                 <td>${trainer.name}</td>
-                <td><input type="checkbox" name="trainersID" value="${trainer.id}"></td>
+                <td><input type="radio" name="trainersID" value="${trainer.id}"></td>
             </tr>
         `
         $("#tainerDetails").append(list_trainers)
@@ -226,8 +250,7 @@ function showtable(classID) {
     $("#table").show();
 }
 
-function showtable2(trainerID) {
-    trainer_id = trainerID
+function showtable2() {
     $("#table").show();
 }
 
