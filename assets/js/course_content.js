@@ -2,6 +2,7 @@ const GRAPHQL_ENDPOINT = "http://localhost:8080/v1/graphql"
 // $('#header').load("/common/navbar.html");
 const params = new URLSearchParams(window.location.search) // use the prev URL
 const course_id = params.get("id")
+console.log(course_id)
  
     $(document).ready(function () {
     $("#sidebar").mCustomScrollbar({
@@ -32,31 +33,54 @@ async function getmaterials(){
                   course_id
                   course_link
                   description
+                  week
                 }
               }
               
             `
         })
-        
-
     })
     const dataset = await response.json()
     const materials = dataset.data.course_materials
-    console.log(materials[0].description)
-    for(individual_materials of materials.reverse()){
-        material_row = 
-                        `<li>
-                                <a href="http://localhost:3000/pages/individual-chapter?mid=${individual_materials.course_link}">${individual_materials.chapter_name}</a>
-                        </li>`
-        document.getElementById('displaysidechapter').innerHTML+= material_row
-
+ 
+    // function to check if its unique 
+    function checkAvailability(arr, val) {
+      return arr.some(arrVal => val === arrVal);
     }
-    document.getElementById('coursetitle').innerHTML= materials[0].description
 
+    // Get all the unique weeks 
+    week_array = []
+    for(oneWeek of materials){
+        if(checkAvailability(week_array, oneWeek.week) == false){
+            week_array.push(oneWeek.week)
+        }
+    }
+
+    // DISPLAY ALL THE UNIQUE WEEKS 
+    week_dropdown = ''
+
+    for(individual_week of week_array){
+        week_dropdown += `
+        <li class="active" id=${individual_week}>
+            <a href="#homeSubmenu${individual_week}" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Week ${individual_week}</a>
+            <ul class="collapse list-unstyled" id="homeSubmenu${individual_week}"> `
+            for(individual_materials of materials){
+                if(individual_week == individual_materials.week){
+                    week_dropdown += 
+        
+                    `<li>
+                            <a href="http://localhost:3000/pages/individual-chapter?mid=${individual_materials.course_link}&iid=${individual_materials.course_id}">${individual_materials.chapter_name}</a>        
+                    </li>`   
+                }
      
+            }
+            week_dropdown +=`</ul> 
+        </li>
+        `
+    }
+    document.getElementById('displaysidechapter').innerHTML= week_dropdown
 
+    document.getElementById('coursetitle').innerHTML= materials[0].description
 }
-
 getmaterials()
-console.log("hi there")
-
+ 
