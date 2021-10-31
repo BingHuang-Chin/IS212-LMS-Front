@@ -118,6 +118,52 @@ async function getLearners() {
 getLearners()
 
 
+async function getClassLearners() {
+    const response = await fetch(GRAPHQL_ENDPOINT, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'authorization': getIdToken(),
+        },
+        body: JSON.stringify({
+            query: `
+                query {
+                    learner {
+                    id
+                    name
+                  }
+                }
+            `
+        })
+    })
+
+    const { errors, data } = await response.json()
+    if (errors) {
+        Swal.fire({
+            title: 'Error!',
+            text: 'Failed to retrieve learners!',
+            icon: 'error'
+        }).then(result => {
+            if (result.isDismissed || result.isConfirmed)
+                location.reload()
+        })
+        return
+    }
+
+    for (const learner of data.learner) {
+        list_learners = `
+            <tr>
+                <td>${learner.id}</td>
+                <td>${learner.name}</td>
+                <td><input type="checkbox" name="learnersID" value="${learner.id}"></td>
+            </tr>
+        `
+        $("#learnerDetails").append(list_learners)
+    }
+}
+
+getLearners()
+
 async function getTrainers() {
     const response = await fetch(GRAPHQL_ENDPOINT, {
         method: 'POST',
@@ -226,7 +272,7 @@ async function getClasses() {
                         <p class="card-text"><strong>Class end date: ${classes.end_date}</strong></p>
                         <p class="card-text"><strong>Class start time: ${classes.class_start_time}</strong></p>
                         <p class="card-text"><strong>Class end time: ${classes.class_end_time}</strong></p>
-                        <p class="card-text"><strong>Trainer: ${getTrainerName(classes.trainer)}</strong></p>
+                        <p class="card-text"><strong>Trainer: ${classes.trainer_id}</strong></p>
                         <button type="button" class="btn btn-secondary" onclick="showtable(${classes.id})">Assign available learners and trainers</button>
                     </div>
                 </div>`
@@ -237,11 +283,11 @@ async function getClasses() {
 getClasses()
 
 
-function getTrainerName(input) {
-    for (i in input) {
-        return input[i]
-    }
-}
+// function getTrainerName(input) {
+//     for (i in input) {
+//         return input[i]
+//     }
+// }
 
 
 function showtable(classID) {
@@ -254,34 +300,3 @@ function showtable2() {
     $("#table").show();
 }
 
-// function getEnrolmentDetails() {
-//     array = []
-//     const params = new URLSearchParams(window.location.search)
-//     const course_id = params.get("id")
-//     $("input:checkbox[name=learnersID]:checked").each(function () {
-//         array.push($(this).val());
-//     });
-//     console.log(array)
-//     for (i in array) {
-//         console.log(array[i])
-//     }
-
-//     console.log(classID)
-//     console.log(course_id)
-// }
-
-// getEnrolmentDetails()
-
-
-// function getTrainerDetails(input) {
-//     trainers = input
-//     for (i in trainers) {
-//         console.log(i)
-//         if (isNaN(i)) {
-//             return input[i][0]
-//         }
-//         else {
-//             return input[i][1]
-//         }
-//     }
-// }
