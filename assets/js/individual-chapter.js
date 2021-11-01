@@ -99,10 +99,16 @@ async function getindividual(){
     
 async function downloadbtn(){
     to_download = `
-    <a href="path_to_file" download="${single_material}">Download</a>
+    <a href="path_to_file" download="${single_material}">Download Content</a>
     `
-    console.log(single_material)
     document.getElementById('download_button').innerHTML= to_download
+
+    to_quiz = 
+    `
+    <a href="path_to_file" download="${single_material}">Start Quiz</a>
+    `
+    document.getElementById('quiz_time').innerHTML= to_quiz
+
 
 }
 downloadbtn()
