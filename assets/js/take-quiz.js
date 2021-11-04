@@ -2,65 +2,90 @@ const GRAPHQL_ENDPOINT = "http://localhost:8080/v1/graphql"
 const params = new URLSearchParams(window.location.search) // use the prev URL
 
 const section_id = params.get("qid")
-
 const course_id = params.get("cid")
 
-async function getquiz(){
-  
-    const response = await fetch(GRAPHQL_ENDPOINT,{
-        method:'POST', 
-        headers:{
-            'Content-Type': 'application/json',
-            'authorization': getIdToken(),
-        },
+async function getquiz () {
+  let query = `
+    query {
+      course(where: {id: {_eq:${course_id}}}) {
+        sections(where:{id:{_eq:${section_id}}}) {
+          name
+          quizzes {
+            id
+            questions {
+              id
+              title
+              question_options {
+                id
+                title
+              }
+            }
+          }
+        }
+      }
 
-        body: JSON.stringify({
-            query:`
-            query {
-                course(where: {id: {_eq:${course_id}}}) {
-                  sections(where:{id:{_eq:${section_id}}}) {
-                    name
-                    quizzes {
-                      questions {
-                        id
-                        title
-                        question_options {
-                          id
-                          title
-                        }
-                      }
-                    }
-                  }
-                }
-              }              
-            `
-        })
-    })
-    const dataset = await response.json()
-    const quiz = dataset.data.course
+      completed_quiz(where: {quiz_id: {_eq: 1}, learner_id: {_eq: 1}, score: {_neq: -1}}, order_by: {attempt: desc}, limit: 1) {
+        attempt
+      }
+    }              
+  `
+  const { course: quiz, completed_quiz } = (await postDataToHasura(query))
+  const { questions: all_questions_object, id: quizId } = quiz[0].sections[0].quizzes[0]
+  const currentAttempts = completed_quiz.length === 0 ? 1 : completed_quiz[0].attempt + 1
 
-    all_questions_object = quiz[0].sections[0].quizzes[0].questions
+  display_question = ''
 
-    display_question = ''
+  for (individual_question_object of all_questions_object) {
+    const { id: questionId } = individual_question_object
 
-    for(individual_question_object of all_questions_object){
-      const { id: questionId } = individual_question_object
-
-        display_question+=`
+    display_question += `
         <div>
             <p id="insert_question" class="text-justify h5 pb-2 font-weight-bold">${individual_question_object.title}</p>
             <div id="insert_options" class="options py-3">`
-            for(options of individual_question_object.question_options){
-                display_question+=
-                `
+    for (options of individual_question_object.question_options) {
+      display_question +=
+        `
                 <label class="rounded p-2 option"> ${options.title} <input type="radio" name="radio-${questionId}"><span class="checkmark"></span> </label> 
                 `
-            }
-            display_question+=`
+    }
+    display_question += `
             </div>        
         </div>`
-    }
-    document.getElementById('one_question').innerHTML= display_question
-    }
+  }
+  document.getElementById('one_question').innerHTML = display_question
+
+  query = `
+    mutation {
+      insert_completed_quiz(objects: [
+        {
+          attempt: ${currentAttempts},
+          learner_id: 1,
+          quiz_id: ${quizId}
+        }
+      ], on_conflict: {
+        constraint: completed_quiz_pkey
+      }) {
+        affected_rows
+      }
+    }  
+  `
+  await postDataToHasura(query)
+}
 
 getquiz()
+
+async function postDataToHasura (query) {
+  const response = await fetch(GRAPHQL_ENDPOINT, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'authorization': getIdToken(),
+      'x-hasura-role': 'learner'
+    },
+
+    body: JSON.stringify({ query })
+  })
+
+  const dataset = await response.json()
+  return dataset.data
+}
