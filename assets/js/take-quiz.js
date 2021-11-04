@@ -4,6 +4,9 @@ const params = new URLSearchParams(window.location.search) // use the prev URL
 const section_id = params.get("qid")
 const course_id = params.get("cid")
 
+let loadedAttempt = null
+let loadedQuizId = null
+
 async function getquiz () {
   let query = `
     query {
@@ -32,6 +35,8 @@ async function getquiz () {
   const { course: quiz, completed_quiz } = (await postDataToHasura(query))
   const { questions: all_questions_object, id: quizId } = quiz[0].sections[0].quizzes[0]
   const currentAttempts = completed_quiz.length === 0 ? 1 : completed_quiz[0].attempt + 1
+  loadedAttempt = currentAttempts
+  loadedQuizId = quizId
 
   display_question = ''
 
@@ -45,8 +50,8 @@ async function getquiz () {
     for (options of individual_question_object.question_options) {
       display_question +=
         `
-                <label class="rounded p-2 option"> ${options.title} <input type="radio" name="radio-${questionId}"><span class="checkmark"></span> </label> 
-                `
+          <label class="rounded p-2 option"> ${options.title} <input type="radio" name="radio-${questionId}" onclick="insertSelectedOptions('${currentAttempts}', '${quizId}', '${options.id}')"><span class="checkmark"></span> </label> 
+        `
     }
     display_question += `
             </div>        
@@ -88,4 +93,29 @@ async function postDataToHasura (query) {
 
   const dataset = await response.json()
   return dataset.data
+}
+
+async function insertSelectedOptions (attempt, quizId, selectedOption) {
+  const query = `
+    mutation {
+      insert_selected_options_one(object: {attempt: ${attempt}, learner_id: 1, option_id: ${selectedOption}, quiz_id: ${quizId}}, on_conflict: {constraint: selected_options_pkey, update_columns: option_id}) {
+        option_id
+      }
+    }
+  `
+
+  await postDataToHasura(query)
+}
+
+async function submitQuiz() {
+  const query = `
+    mutation {
+      gradeQuiz(object: {attempt: ${loadedAttempt}, learner_id: 1, quiz_id: ${loadedQuizId}}) {
+        status
+        message
+      }
+    }
+  `
+
+  await postDataToHasura(query)
 }
