@@ -34,14 +34,15 @@ async function getmaterials(){
                   course_link
                   description
                   week
+                  section_id
                 }
               }
-              
             `
         })
     })
     const dataset = await response.json()
     const materials = dataset.data.course_materials
+    let sectionId = null
  
     // function to check if its unique 
     function checkAvailability(arr, val) {
@@ -54,6 +55,8 @@ async function getmaterials(){
         if(checkAvailability(week_array, oneWeek.week) == false){
             week_array.push(oneWeek.week)
         }
+
+        sectionId = oneWeek.section_id
     }
 
     // DISPLAY ALL THE UNIQUE WEEKS 
@@ -69,7 +72,7 @@ async function getmaterials(){
                     week_dropdown += 
         
                     `<li>
-                            <a href="http://localhost:3000/pages/individual-chapter?mid=${individual_materials.course_link}&iid=${individual_materials.course_id}">${individual_materials.chapter_name}</a>        
+                            <a href="http://localhost:3000/pages/individual-chapter?mid=${individual_materials.course_link}&iid=${individual_materials.course_id}&sid=${sectionId}">${individual_materials.chapter_name}</a>        
                     </li>`   
                 }
      
