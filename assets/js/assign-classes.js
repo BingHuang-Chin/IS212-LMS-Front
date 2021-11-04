@@ -1,5 +1,5 @@
 const GRAPHQL_ENDPOINT = "http://localhost:8080/v1/graphql"
-$('#header').load("/common/navbar.html");
+$('#header').load("/common/hr-navbar.html");
 
 let allLearners = []
 $(document).ready(async function () {
@@ -84,7 +84,7 @@ async function enrolLearnersAndTrainers() {
 }
 
 function checkTrainer() {
-    
+
 }
 async function getLearners() {
     const response = await fetch(GRAPHQL_ENDPOINT, {
@@ -317,6 +317,7 @@ async function showtable(classID) {
 
 function showtable2(classID) {
     class_id = classID
+
     getClassLearners(class_id)
     $("#nonassigned-learner-table").hide();
     $("#trainer-table").hide();

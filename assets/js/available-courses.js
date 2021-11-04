@@ -1,5 +1,5 @@
 const GRAPHQL_ENDPOINT = "http://localhost:8080/v1/graphql"
-$('#header').load("/common/navbar.html");
+$('#header').load("/common/hr-navbar.html");
 
 async function getCourses() {
     const response = await fetch(GRAPHQL_ENDPOINT, {
