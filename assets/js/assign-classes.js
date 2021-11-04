@@ -1,8 +1,20 @@
 const GRAPHQL_ENDPOINT = "http://localhost:8080/v1/graphql"
 $('#header').load("/common/navbar.html");
-$(document).ready(function () {
-    $('#table').hide()
-    $('#table2').hide()
+
+let allLearners = []
+$(document).ready(async function () {
+    $('#nonassigned-learner-table').hide()
+    $('#assigned-learner-table').hide()
+    $('#trainer-table').hide()
+    $('#assign-btn').hide()
+
+    const [_, __, learners] = await Promise.all([
+        getClasses(),
+        getTrainers(),
+        getLearners()
+    ])
+
+    allLearners = learners
 })
 
 let class_id
@@ -71,6 +83,9 @@ async function enrolLearnersAndTrainers() {
     })
 }
 
+function checkTrainer() {
+    
+}
 async function getLearners() {
     const response = await fetch(GRAPHQL_ENDPOINT, {
         method: 'POST',
@@ -103,19 +118,24 @@ async function getLearners() {
         return
     }
 
-    for (const learner of data.learner) {
-        list_learners = `
+    renderLearners(data.learner)
+
+    return data.learner
+}
+
+function renderLearners(learners) {
+    let list_learners = ""
+    for (const learner of learners) {
+        list_learners += `
             <tr>
                 <td>${learner.id}</td>
                 <td>${learner.name}</td>
                 <td><input type="checkbox" name="learnersID" value="${learner.id}"></td>
             </tr>
         `
-        $("#learnerDetails").append(list_learners)
+        $("#learnerDetails").html(list_learners)
     }
 }
-
-getLearners()
 
 async function getTrainers() {
     const response = await fetch(GRAPHQL_ENDPOINT, {
@@ -159,9 +179,9 @@ async function getTrainers() {
         `
         $("#tainerDetails").append(list_trainers)
     }
-}
 
-getTrainers()
+    return data.trainer
+}
 
 async function getClassLearners(id) {
     const response = await fetch(GRAPHQL_ENDPOINT, {
@@ -194,18 +214,22 @@ async function getClassLearners(id) {
         return
     }
 
+    let list_learners = ""
     for (const learner of data.learner) {
-        list_learners = `
+        list_learners += `
             <tr>
                 <td>${learner.id}</td>
                 <td>${learner.name}</td>
                 <td><input type="checkbox" name="learnersID" value="${learner.id}"></td>
             </tr>
         `
-        $("#enrolledLearners").append(list_learners)
+
     }
+
+    $("#enrolledLearners").html(list_learners)
+
+    return data.learner
 }
-getClassLearners()
 
 async function getClasses() {
     const params = new URLSearchParams(window.location.search)
@@ -276,24 +300,27 @@ async function getClasses() {
         }
     }
 }
-getClasses()
 
 
-// function getTrainerName(input) {
-//     for (i in input) {
-//         return input[i]
-//     }
-// }
-
-
-function showtable(classID) {
+async function showtable(classID) {
     class_id = classID
-    $("#table").show();
+
+    const assignedLearners = (await getClassLearners(class_id)).map(learner => learner.id)
+    const filteredLeaners = allLearners.filter(learner => !assignedLearners.includes(learner.id))
+    renderLearners(filteredLeaners)
+
+    $("#nonassigned-learner-table").show();
+    $("#trainer-table").show();
+    $("#assigned-learner-table").hide();
+    $('#assign-btn').show()
 }
 
 function showtable2(classID) {
     class_id = classID
     getClassLearners(class_id)
-    $("#table2").show();
+    $("#nonassigned-learner-table").hide();
+    $("#trainer-table").hide();
+    $("#assigned-learner-table").show();
+    $('#assign-btn').hide()
 }
 
