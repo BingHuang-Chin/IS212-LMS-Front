@@ -2,6 +2,7 @@ const GRAPHQL_ENDPOINT = "http://localhost:8080/v1/graphql"
 $('#header').load("/common/navbar.html");
 $(document).ready(function () {
     $('#table').hide()
+    $('#table2').hide()
 })
 
 let class_id
@@ -10,7 +11,6 @@ let status_id = 1
 async function enrolLearnersAndTrainers() {
     learners_array = []
     object_array = []
-
     const params = new URLSearchParams(window.location.search)
     const course_id = params.get("id")
 
@@ -117,53 +117,6 @@ async function getLearners() {
 
 getLearners()
 
-
-async function getClassLearners() {
-    const response = await fetch(GRAPHQL_ENDPOINT, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'authorization': getIdToken(),
-        },
-        body: JSON.stringify({
-            query: `
-                query {
-                    learner {
-                    id
-                    name
-                  }
-                }
-            `
-        })
-    })
-
-    const { errors, data } = await response.json()
-    if (errors) {
-        Swal.fire({
-            title: 'Error!',
-            text: 'Failed to retrieve learners!',
-            icon: 'error'
-        }).then(result => {
-            if (result.isDismissed || result.isConfirmed)
-                location.reload()
-        })
-        return
-    }
-
-    for (const learner of data.learner) {
-        list_learners = `
-            <tr>
-                <td>${learner.id}</td>
-                <td>${learner.name}</td>
-                <td><input type="checkbox" name="learnersID" value="${learner.id}"></td>
-            </tr>
-        `
-        $("#learnerDetails").append(list_learners)
-    }
-}
-
-getLearners()
-
 async function getTrainers() {
     const response = await fetch(GRAPHQL_ENDPOINT, {
         method: 'POST',
@@ -197,7 +150,6 @@ async function getTrainers() {
     }
 
     for (const trainer of data.trainer) {
-        console.log(trainer)
         list_trainers = `
             <tr>
                 <td>${trainer.id}</td>
@@ -210,6 +162,50 @@ async function getTrainers() {
 }
 
 getTrainers()
+
+async function getClassLearners(id) {
+    const response = await fetch(GRAPHQL_ENDPOINT, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'authorization': getIdToken(),
+        },
+        body: JSON.stringify({
+            query: `
+                query {
+                    learner(where: {enrolments: {class_id: {_eq: ${id}}}}) {
+                    id
+                    name
+                    }
+                }
+            `
+        })
+    })
+    const { errors, data } = await response.json()
+    if (errors) {
+        Swal.fire({
+            title: 'Error!',
+            text: 'Failed to retrieve enrolled learners!',
+            icon: 'error'
+        }).then(result => {
+            if (result.isDismissed || result.isConfirmed)
+                location.reload()
+        })
+        return
+    }
+
+    for (const learner of data.learner) {
+        list_learners = `
+            <tr>
+                <td>${learner.id}</td>
+                <td>${learner.name}</td>
+                <td><input type="checkbox" name="learnersID" value="${learner.id}"></td>
+            </tr>
+        `
+        $("#enrolledLearners").append(list_learners)
+    }
+}
+getClassLearners()
 
 async function getClasses() {
     const params = new URLSearchParams(window.location.search)
@@ -262,7 +258,6 @@ async function getClasses() {
 
     else {
         for (const classes of data.class) {
-            console.log(classes.id)
             cards = `
                 <div class="card mb-4">
                     <div class="card-body">
@@ -273,7 +268,8 @@ async function getClasses() {
                         <p class="card-text"><strong>Class start time: ${classes.class_start_time}</strong></p>
                         <p class="card-text"><strong>Class end time: ${classes.class_end_time}</strong></p>
                         <p class="card-text"><strong>Trainer: ${classes.trainer_id}</strong></p>
-                        <button type="button" class="btn btn-secondary" onclick="showtable(${classes.id})">Assign available learners and trainers</button>
+                        <button type="button" class="btn btn-secondary mb-3" onclick="showtable(${classes.id})">View available learners and trainers</button>
+                        <button type="button" class="btn btn-secondary" style="margin-bottom:5px" onclick="showtable2(${classes.id})">View enrolled learners</button>
                     </div>
                 </div>`
             $("#cardColumns").append(cards)
@@ -292,11 +288,12 @@ getClasses()
 
 function showtable(classID) {
     class_id = classID
-    showtable2()
     $("#table").show();
 }
 
-function showtable2() {
-    $("#table").show();
+function showtable2(classID) {
+    class_id = classID
+    getClassLearners(class_id)
+    $("#table2").show();
 }
 
