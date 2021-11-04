@@ -1,9 +1,12 @@
 const GRAPHQL_ENDPOINT = "http://localhost:8080/v1/graphql"
-// $('#header').load("/common/navbar.html");
 const params = new URLSearchParams(window.location.search) // use the prev URL
 const single_material = params.get("mid")
+
+// course ID
 const iid = params.get("iid")
 
+//section ID 
+const sid = params.get("sid") 
 
 $(document).ready(function () {
     $("#sidebar").mCustomScrollbar({
@@ -35,6 +38,7 @@ async function getmaterials(){
                   course_link
                   description
                   week
+                  section_id
                 }
               }
               
@@ -43,6 +47,7 @@ async function getmaterials(){
     })
     const dataset = await response.json()
     const materials = dataset.data.course_materials
+
  
     // function to check if its unique 
     function checkAvailability(arr, val) {
@@ -67,11 +72,14 @@ async function getmaterials(){
             <ul class="collapse list-unstyled" id="homeSubmenu${individual_week}"> `
             for(individual_materials of materials){
                 if(individual_week == individual_materials.week){
+                    // console.log(individual_materials.week)
+                    quiz_section_id = individual_materials.section_id
                     week_dropdown += 
         
                     `<li>
-                            <a href="http://localhost:3000/pages/individual-chapter?mid=${individual_materials.course_link}&iid=${individual_materials.course_id}">${individual_materials.chapter_name}</a>        
-                    </li>`   
+                            <a href="http://localhost:3000/pages/individual-chapter?mid=${individual_materials.course_link}&iid=${individual_materials.course_id}&sid=${individual_materials.section_id}">${individual_materials.chapter_name}</a>        
+                    </li>`
+                       
                 }
      
             }
@@ -98,6 +106,7 @@ async function getindividual(){
 
     
 async function downloadbtn(){
+    console.log(sid)
     to_download = `
     <a href="path_to_file" download="${single_material}">Download Content</a>
     `
@@ -105,10 +114,16 @@ async function downloadbtn(){
 
     to_quiz = 
     `
-    <a href="path_to_file" download="${single_material}">Start Quiz</a>
+    <a href="http://localhost:3000/pages/take-quiz?qid=${sid}&cid=${iid}">Start Quiz</a>        
     `
     document.getElementById('quiz_time').innerHTML= to_quiz
 
 
 }
 downloadbtn()
+
+// async function getsection(sid){
+//     // console.log(sid)
+
+// }
+// getsection()
