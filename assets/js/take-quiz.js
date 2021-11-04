@@ -4,6 +4,8 @@ const params = new URLSearchParams(window.location.search) // use the prev URL
 const section_id = params.get("qid")
 
 const course_id = params.get("cid")
+console.log(section_id)
+console.log(course_id)
 
 
 async function getquiz(){
@@ -38,10 +40,11 @@ async function getquiz(){
     const dataset = await response.json()
     const quiz = dataset.data.course
 
+    console.log(quiz)
     all_questions_object = quiz[0].sections[0].quizzes[0].questions
-    // console.log(all_questions_object)
 
     display_question = ''
+
     for(individual_question_object of all_questions_object){
         display_question+=`
         <div>
