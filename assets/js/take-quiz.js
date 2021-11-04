@@ -50,7 +50,7 @@ async function getquiz () {
     for (options of individual_question_object.question_options) {
       display_question +=
         `
-          <label class="rounded p-2 option"> ${options.title} <input type="radio" name="radio-${questionId}" onclick="insertSelectedOptions('${currentAttempts}', '${quizId}', '${options.id}')"><span class="checkmark"></span> </label> 
+          <label class="rounded p-2 option"> ${options.title} <input type="radio" name="radio-${questionId}" onclick="insertSelectedOptions(${currentAttempts}, ${quizId}, ${questionId}, ${options.id})"><span class="checkmark"></span> </label> 
         `
     }
     display_question += `
@@ -95,10 +95,10 @@ async function postDataToHasura (query) {
   return dataset.data
 }
 
-async function insertSelectedOptions (attempt, quizId, selectedOption) {
+async function insertSelectedOptions (attempt, quizId, questionId, selectedOption) {
   const query = `
     mutation {
-      insert_selected_options_one(object: {attempt: ${attempt}, learner_id: 1, option_id: ${selectedOption}, quiz_id: ${quizId}}, on_conflict: {constraint: selected_options_pkey, update_columns: option_id}) {
+      insert_selected_options_one(object: {attempt: ${attempt}, learner_id: 1, option_id: ${selectedOption}, quiz_id: ${quizId}, question_id: ${questionId}}, on_conflict: {constraint: selected_options_pkey, update_columns: option_id}) {
         option_id
       }
     }
