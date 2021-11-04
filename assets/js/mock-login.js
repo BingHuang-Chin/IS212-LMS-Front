@@ -2,27 +2,27 @@
  * Username and passwords are left exposed intentionally so that we are able
  * to mock the information prior to Azure SSO implementation
  */
-const loginAsHr = () => {
-  userLogin("hr@aio.com", "Pass123$")
+const loginAsHr = url => {
+  userLogin("hr@aio.com", "Pass123$", url)
 }
 
-const loginAsTrainer = () => {
-  userLogin("trainer@aio.com", "Pass123$")
+const loginAsTrainer = url => {
+  userLogin("trainer@aio.com", "Pass123$", url)
 }
 
-const loginAsLearner = () => {
-  userLogin("learner@aio.com", "Pass123$")
+const loginAsLearner = url => {
+  userLogin("learner@aio.com", "Pass123$", url)
 }
 
-const userLogin = (email, password) => {
+const userLogin = (email, password, url) => {
   auth0App.client.login({
     password,
     username: email,
     realm: "Username-Password-Authentication",
-  }, onLoginSuccessful)
+  }, (err, result) => { onLoginSuccessful(err, result, url) })
 }
 
-const onLoginSuccessful = (err, result) => {
+const onLoginSuccessful = (err, result, url) => {
   if (err) {
     console.error('[Authentication] Failed to authenticate user due to the following reason: ', err)
     return
@@ -34,5 +34,5 @@ const onLoginSuccessful = (err, result) => {
   localStorage.setItem('idToken', idToken)
   localStorage.setItem('tokenExpiry', expireTimestamp)
 
-  window.location.replace("/pages/home")
+  window.location.replace(url)
 }
