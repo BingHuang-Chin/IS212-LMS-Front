@@ -4,9 +4,6 @@ const params = new URLSearchParams(window.location.search) // use the prev URL
 const section_id = params.get("qid")
 
 const course_id = params.get("cid")
-console.log(section_id)
-console.log(course_id)
-
 
 async function getquiz(){
   
@@ -25,8 +22,10 @@ async function getquiz(){
                     name
                     quizzes {
                       questions {
+                        id
                         title
                         question_options {
+                          id
                           title
                         }
                       }
@@ -40,22 +39,21 @@ async function getquiz(){
     const dataset = await response.json()
     const quiz = dataset.data.course
 
-    console.log(quiz)
     all_questions_object = quiz[0].sections[0].quizzes[0].questions
 
     display_question = ''
 
     for(individual_question_object of all_questions_object){
+      const { id: questionId } = individual_question_object
+
         display_question+=`
         <div>
             <p id="insert_question" class="text-justify h5 pb-2 font-weight-bold">${individual_question_object.title}</p>
             <div id="insert_options" class="options py-3">`
             for(options of individual_question_object.question_options){
-                console.log(options.title)
-
                 display_question+=
                 `
-                <label class="rounded p-2 option"> ${options.title} <input type="radio" name="radio"> <span class="crossmark"></span> </label> 
+                <label class="rounded p-2 option"> ${options.title} <input type="radio" name="radio-${questionId}"><span class="checkmark"></span> </label> 
                 `
             }
             display_question+=`
