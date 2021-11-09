@@ -2,7 +2,7 @@ const GRAPHQL_ENDPOINT = "http://localhost:8080/v1/graphql"
 // $('#header').load("/common/navbar.html");
 const params = new URLSearchParams(window.location.search) // use the prev URL
 const course_id = params.get("id")
-console.log(course_id)
+// console.log(course_id)
  
     $(document).ready(function () {
     $("#sidebar").mCustomScrollbar({
@@ -52,6 +52,7 @@ async function getmaterials(){
     // Get all the unique weeks 
     week_array = []
     for(oneWeek of materials){
+        console.log(oneWeek)
         if(checkAvailability(week_array, oneWeek.week) == false){
             week_array.push(oneWeek.week)
         }
@@ -69,6 +70,7 @@ async function getmaterials(){
             <ul class="collapse list-unstyled" id="homeSubmenu${individual_week}"> `
             for(individual_materials of materials){
                 if(individual_week == individual_materials.week){
+                    // console.log(individual_materials.section_id)
                     week_dropdown += 
         
                     `<li>

@@ -7,7 +7,7 @@ const course_id = params.get("cid")
 let loadedAttempt = null
 let loadedQuizId = null
 
-async function getquiz () {
+async function getquiz() {
   let query = `
     query {
       course(where: {id: {_eq:${course_id}}}) {
@@ -35,9 +35,14 @@ async function getquiz () {
   const { course: quiz, completed_quiz } = (await postDataToHasura(query))
   const { questions: all_questions_object, id: quizId } = quiz[0].sections[0].quizzes[0]
   const currentAttempts = completed_quiz.length === 0 ? 1 : completed_quiz[0].attempt + 1
+ 
   loadedAttempt = currentAttempts
-  loadedQuizId = quizId
+  console.log(loadedAttempt)
 
+  loadedQuizId = quizId
+ 
+
+  
   display_question = ''
 
   for (individual_question_object of all_questions_object) {
@@ -108,6 +113,7 @@ async function insertSelectedOptions (attempt, quizId, questionId, selectedOptio
 }
 
 async function submitQuiz() {
+  
   const query = `
     mutation {
       gradeQuiz(object: {attempt: ${loadedAttempt}, learner_id: 1, quiz_id: ${loadedQuizId}}) {
@@ -116,6 +122,17 @@ async function submitQuiz() {
       }
     }
   `
-
+  // console.log(query)
   await postDataToHasura(query)
+  finishQuizPage(loadedQuizId)
 }
+
+
+async function finishQuizPage(idQuiz){
+  location.href = `completed-quiz?qid=${idQuiz}&cid=${course_id}`;
+
+}
+
+// async function uploadGrade(){
+
+// }

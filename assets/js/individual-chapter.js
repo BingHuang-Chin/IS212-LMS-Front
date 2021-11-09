@@ -1,12 +1,13 @@
 const GRAPHQL_ENDPOINT = "http://localhost:8080/v1/graphql"
 const params = new URLSearchParams(window.location.search) // use the prev URL
-const single_material = params.get("mid")
+const single_material = params.get("mid") // course link
 
 // course ID
 const iid = params.get("iid")
 
 //section ID 
 const sid = params.get("sid") 
+// console.log("hello")
 
 $(document).ready(function () {
     $("#sidebar").mCustomScrollbar({
@@ -106,7 +107,6 @@ async function getindividual(){
 
     
 async function downloadbtn(){
-    console.log(sid)
     to_download = `
     <a href="path_to_file" download="${single_material}">Download Content</a>
     `
@@ -122,8 +122,3 @@ async function downloadbtn(){
 }
 downloadbtn()
 
-// async function getsection(sid){
-//     // console.log(sid)
-
-// }
-// getsection()
