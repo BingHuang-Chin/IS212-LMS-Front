@@ -19,7 +19,7 @@ $(document).ready(async function () {
 
 let class_id
 let trainer_id
-let status_id = 1
+let status_id = 2
 async function enrolLearnersAndTrainers() {
     learners_array = []
     object_array = []
@@ -292,8 +292,8 @@ async function getClasses() {
                         <p class="card-text"><strong>Class start time: ${classes.class_start_time}</strong></p>
                         <p class="card-text"><strong>Class end time: ${classes.class_end_time}</strong></p>
                         <p class="card-text"><strong>Trainer: ${classes.trainer_id}</strong></p>
-                        <button type="button" class="btn btn-secondary mb-3" onclick="showtable(${classes.id})">View available learners and trainers</button>
-                        <button type="button" class="btn btn-secondary" style="margin-bottom:5px" onclick="showtable2(${classes.id})">View enrolled learners</button>
+                        <button type="button" class="btn btn-secondary mb-3" onclick="showtable(${classes.id})">View available learners and trainers</button></br>
+                        <button type="button" class="btn btn-secondary" onclick="showtable2(${classes.id})">View enrolled learners</button>
                     </div>
                 </div>`
             $("#cardColumns").append(cards)
