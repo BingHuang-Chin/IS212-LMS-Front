@@ -1,8 +1,9 @@
 const GRAPHQL_ENDPOINT = "http://localhost:8080/v1/graphql"
 const params = new URLSearchParams(window.location.search) // use the prev URL
 
-const section_id = params.get("qid")
+const section_id = params.get("sid")
 const course_id = params.get("cid")
+const quiz_id = params.get("qid")
 
 let loadedAttempt = null
 let loadedQuizId = null
@@ -27,7 +28,7 @@ async function getquiz() {
         }
       }
 
-      completed_quiz(where: {quiz_id: {_eq: 1}, learner_id: {_eq: 1}, score: {_neq: -1}}, order_by: {attempt: desc}, limit: 1) {
+      completed_quiz(where: {quiz_id: {_eq: ${quiz_id}}, learner_id: {_eq: 1}, score: {_neq: -1}}, order_by: {attempt: desc}, limit: 1) {
         attempt
       }
     }              
