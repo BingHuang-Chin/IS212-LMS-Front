@@ -3,6 +3,18 @@ const params = new URLSearchParams(window.location.search) // use the prev URL
 const course_id = params.get("cid")
 const quizId = params.get("qid")
 
+
+async function exitButton(){
+  
+  toExit = `
+  <a href="http://localhost:3000/pages/course_content?id=${course_id}" class="button">Exit Quiz</a>
+  `
+  console.log(toExit)
+  document.getElementById('exitButton').innerHTML += toExit
+}
+exitButton()
+
+
 async function updateCompletedQuiztable(quiz_attempt, pof) {
   // console.log(pof)
   // console.log(quiz_id)
@@ -94,14 +106,14 @@ async function getQuizResults(title, sectionId, counter) {
     <th>${title}</th>
     <th>${sectionId}</th> 
     <th>${eachQuiz.score}/${counter}</th>`
-    console.log(eachQuiz.score)
+    // console.log(eachQuiz.score)
 
     if (eachQuiz.score < passingGrade) {
       pof = "Failed"
       // console.log(eachQuiz.score / counter)
       oneRow += `
       <th style="color:#ff3333">Failed</th>`
-      console.log(eachQuiz.score, pof)
+      // console.log(eachQuiz.score, pof)
       
       updateCompletedQuiztable(eachQuiz.attempt, pof)
     }
@@ -110,7 +122,7 @@ async function getQuizResults(title, sectionId, counter) {
       pof = "Passed"
       oneRow += `
       <th style="color:#3CB371">Passed</th>`
-      console.log(eachQuiz.score, pof)
+      // console.log(eachQuiz.score, pof)
 
       updateCompletedQuiztable(eachQuiz.attempt, pof)
     }
@@ -170,36 +182,8 @@ async function getQuizTitle() {
 
 getQuizTitle()
 
-// async function numberofQuizQuestions(){
-
-//   const response = await fetch(GRAPHQL_ENDPOINT,{
-//     method:'POST', 
-//     headers:{
-//         'Content-Type': 'application/json',
-//         'authorization': getIdToken(),
-//     },
-
-//     body: JSON.stringify({
-//         query:
-//         `
-
-//         query  {
-//           quiz(where: {id: {_eq: 1}}) {
-//             questions {
-//               id
-//             }
-//           }}
-
-//         `
-
-//     })
-// })
-
-// const dataset = await response.json()
-// const allQuestions = dataset.data.quiz[0].questions
 let counter = 0
 for (question of allQuestions) {
-  // console.log(question)
+  console.log(question)
   counter += 1
 }
-// }

@@ -107,6 +107,7 @@ async function getindividual(){
 
     
 async function downloadbtn(){
+    console.log(single_material)
     to_download = `
     <a href="path_to_file" download="${single_material}">Download Content</a>
     `
