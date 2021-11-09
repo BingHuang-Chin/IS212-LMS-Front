@@ -9,6 +9,8 @@ const iid = params.get("iid")
 const sid = params.get("sid") 
 // console.log("hello")
 
+let qid = null
+
 $(document).ready(function () {
     $("#sidebar").mCustomScrollbar({
         theme: "minimal"
@@ -32,23 +34,29 @@ async function getmaterials(){
 
         body: JSON.stringify({
             query:`
-            query {
-                course_materials(where: {course_id: {_eq: ${iid}}}) {
-                  chapter_name
-                  course_id
-                  course_link
-                  description
-                  week
-                  section_id
+              query {
+                course_by_pk(id: ${iid}) {
+                  course_materials {
+                    course_id
+                    chapter_name
+                    course_link
+                    description
+                    week
+                  }
+                  
+                  sections(where: { id: { _eq: ${sid} }}) {
+                    quizzes {
+                      id
+                    }
+                  }
                 }
               }
-              
             `
         })
     })
     const dataset = await response.json()
-    const materials = dataset.data.course_materials
-
+    const materials = dataset.data.course_by_pk.course_materials
+    qid = dataset.data.course_by_pk.sections[0].quizzes[0].id
  
     // function to check if its unique 
     function checkAvailability(arr, val) {
@@ -73,8 +81,6 @@ async function getmaterials(){
             <ul class="collapse list-unstyled" id="homeSubmenu${individual_week}"> `
             for(individual_materials of materials){
                 if(individual_week == individual_materials.week){
-                    // console.log(individual_materials.week)
-                    quiz_section_id = individual_materials.section_id
                     week_dropdown += 
         
                     `<li>
@@ -91,6 +97,8 @@ async function getmaterials(){
     document.getElementById('displaysidechapter').innerHTML= week_dropdown
 
     document.getElementById('coursetitle').innerHTML= materials[0].description
+
+    downloadbtn()
 }
 getmaterials()
  
@@ -115,11 +123,9 @@ async function downloadbtn(){
 
     to_quiz = 
     `
-    <a href="http://localhost:3000/pages/take-quiz?qid=${sid}&cid=${iid}">Start Quiz</a>        
+    <a href="http://localhost:3000/pages/take-quiz?sid=${sid}&cid=${iid}&qid=${qid}">Start Quiz</a>        
     `
     document.getElementById('quiz_time').innerHTML= to_quiz
 
 
 }
-downloadbtn()
-
