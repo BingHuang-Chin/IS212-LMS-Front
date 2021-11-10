@@ -12,7 +12,7 @@ $(document).ready(async function () {
           <p class="mb-0">${title}</p>
 
           <div>
-            <button class="btn text-danger">Delete</button>
+            <button class="btn text-danger" onclick="onRemoveQuiz(${id})">Delete</button>
             <button class="btn">Edit</button>
           </div>
         </div>
@@ -45,4 +45,43 @@ async function getQuizzes (trainerId) {
 
   const responseJson = await response.json()
   return responseJson.data.section.map(section => section.quizzes).flat()
+}
+
+async function onRemoveQuiz (quizId) {
+  const shouldRemove = confirm("Once removed cannot be reverted.")
+  if (!shouldRemove) return
+
+  const response = await fetch(GRAPHQL_ENDPOINT, {
+    method: "POST",
+    headers: {
+      'Content-Type': 'application/json',
+      'authorization': getIdToken(),
+    },
+    body: JSON.stringify({
+      query: `
+        mutation {
+          delete_quiz_by_pk(id: ${quizId}) {
+            id
+          }
+        }    
+      `
+    })
+  })
+
+  const { errors } = await response.json()
+  if (errors) {
+    Swal.fire({
+      title: 'Error!',
+      text: 'Quiz cannot be removed at this moment.',
+      icon: 'error'
+    })
+
+    return
+  }
+
+  Swal.fire({
+    title: 'Alert',
+    text: 'The quiz has been successfully removed',
+    icon: 'success'
+  })
 }
