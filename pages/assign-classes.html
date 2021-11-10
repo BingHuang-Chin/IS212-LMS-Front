@@ -26,8 +26,8 @@
             <div id="cardColumns">
             </div>
         </div>
-        <div class="col-8" id="table">
-            <table class="table mt-4 m-0">
+        <div class="col-8">
+            <table id="nonassigned-learner-table" class="table mt-4 m-0">
                 <thead>
                     <tr>
                         <th scope="col">Learner ID</th>
@@ -37,7 +37,7 @@
                 </thead>
                 <tbody style="margin-bottom: 10px;" id="learnerDetails"></tbody>
             </table>
-            <table class="table mt-5 m-0">
+            <table id="trainer-table" class="table mt-5 m-0">
                 <thead>
                     <tr>
                         <th scope="col">Trainer ID</th>
@@ -48,12 +48,7 @@
                 <tbody id="tainerDetails"></tbody>
             </table>
 
-            <button type="button" class="btn btn-secondary mt-4 float-end me-3"
-                onclick="enrolLearnersAndTrainers()">Assign</button>
-        </div>
-
-        <div class="col-8" id="table2">
-            <table class="table mt-4 m-0">
+            <table id="assigned-learner-table" class="table mt-4 m-0">
                 <thead>
                     <tr>
                         <th scope="col">Learner ID</th>
@@ -63,15 +58,22 @@
                 </thead>
                 <tbody style="margin-bottom: 10px;" id="enrolledLearners"></tbody>
             </table>
+            <button id="withdraw-btn" type="button" class="btn btn-secondary mt-4 float-end me-3"
+                onclick="withdrawLearners()">Withdraw</button>
+            <button id="assign-btn" type="button" class="btn btn-secondary mt-4 float-end me-3"
+                onclick="enrolLearnersAndTrainers()">Assign</button>
         </div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
         integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.1/js/bootstrap.min.js"
-        integrity="sha512-ewfXo9Gq53e1q1+WDTjaHAGZ8UvCWq0eXONhwDuIoaH8xz2r96uoAYaQCm1oQhnBfRXrvJztNXFsTloJfgbL5Q=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/auth0-js/9.16.4/auth0.min.js"
         integrity="sha512-BaGDtTEN7xL0GZLlmhJ8Ap6h6OExOn+Fc6jGUFJEYFmBymBczqnWcg3oRo3dbFVGNmLus+BGIXFzclZMqs/PLw=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>

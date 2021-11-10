@@ -1,13 +1,26 @@
 const GRAPHQL_ENDPOINT = "http://localhost:8080/v1/graphql"
-$('#header').load("/common/navbar.html");
-$(document).ready(function () {
-    $('#table').hide()
-    $('#table2').hide()
+$('#header').load("/common/hr-navbar.html");
+
+let allLearners = []
+$(document).ready(async function () {
+    $('#nonassigned-learner-table').hide()
+    $('#assigned-learner-table').hide()
+    $('#trainer-table').hide()
+    $('#assign-btn').hide()
+    $('#withdraw-btn').hide()
+
+    const [_, __, learners] = await Promise.all([
+        getClasses(),
+        getTrainers(),
+        getLearners()
+    ])
+
+    allLearners = learners
 })
 
 let class_id
 let trainer_id
-let status_id = 1
+let status_id = 2
 async function enrolLearnersAndTrainers() {
     learners_array = []
     object_array = []
@@ -29,8 +42,8 @@ async function enrolLearnersAndTrainers() {
         object['class_id'] = parseInt(class_id)
         object_array.push(object)
     }
-    console.log(object_array)
-
+    
+    updateClassTrainer(class_id,trainer_id)
 
     const response = await fetch(GRAPHQL_ENDPOINT, {
         method: 'POST',
@@ -62,13 +75,90 @@ async function enrolLearnersAndTrainers() {
     }
 
     Swal.fire({
-        title: 'Learners and trainer added!',
+        title: 'Success!',
         text: 'Learners and Trainer has been successfully added',
         icon: 'success'
     }).then(result => {
         if (result.isDismissed || result.isConfirmed)
             location.reload()
     })
+}
+
+async function updateClassTrainer() {
+
+    const response = await fetch(GRAPHQL_ENDPOINT, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'authorization': getIdToken(),
+        },
+        body: JSON.stringify({
+            query: `
+                mutation MyMutation {
+                    update_class(where: {id: {_eq: ${class_id}}}, _set: {trainer_id: ${trainer_id}})
+                    {
+                    affected_rows
+                    }
+                }
+            `
+        })
+    })
+    const { errors, data } = await response.json()
+    if (errors) {
+        Swal.fire({
+            title: 'Error!',
+            text: 'Failed to update trainer in this class!',
+            icon: 'error'
+        }).then(result => {
+            if (result.isDismissed || result.isConfirmed)
+                location.reload()
+        })
+        return
+    }
+}
+
+async function withdrawLearners() {
+    learners_array = []
+
+    $("input:checkbox[name=learnersID]:checked").each(function () {
+        learners_array.push(parseInt($(this).val()));
+    });
+
+    const response = await fetch(GRAPHQL_ENDPOINT, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'authorization': getIdToken(),
+        },
+        body: JSON.stringify({
+            query: `
+                mutation MyMutation {
+                    delete_enrolment(where: {learner_id: {_in:[${learners_array}]}}) {
+                        affected_rows
+                    }
+                }
+            `
+        })
+    })
+    const { errors, data } = await response.json()
+    if (errors) {
+        Swal.fire({
+            title: 'Error!',
+            text: 'Failed to withdraw learners!',
+            icon: 'error'
+
+        })
+        return
+    }
+    Swal.fire({
+        title: 'Success!',
+        text: 'Successfully withdrawed learners',
+        icon: 'success'
+    }).then(result => {
+        if (result.isDismissed || result.isConfirmed)
+            location.reload()
+    })
+    return
 }
 
 async function getLearners() {
@@ -103,19 +193,24 @@ async function getLearners() {
         return
     }
 
-    for (const learner of data.learner) {
-        list_learners = `
+    renderLearners(data.learner)
+
+    return data.learner
+}
+
+function renderLearners(learners) {
+    let list_learners = ""
+    for (const learner of learners) {
+        list_learners += `
             <tr>
                 <td>${learner.id}</td>
                 <td>${learner.name}</td>
                 <td><input type="checkbox" name="learnersID" value="${learner.id}"></td>
             </tr>
         `
-        $("#learnerDetails").append(list_learners)
+        $("#learnerDetails").html(list_learners)
     }
 }
-
-getLearners()
 
 async function getTrainers() {
     const response = await fetch(GRAPHQL_ENDPOINT, {
@@ -159,9 +254,9 @@ async function getTrainers() {
         `
         $("#tainerDetails").append(list_trainers)
     }
-}
 
-getTrainers()
+    return data.trainer
+}
 
 async function getClassLearners(id) {
     const response = await fetch(GRAPHQL_ENDPOINT, {
@@ -194,18 +289,22 @@ async function getClassLearners(id) {
         return
     }
 
+    let list_learners = ""
     for (const learner of data.learner) {
-        list_learners = `
+        list_learners += `
             <tr>
                 <td>${learner.id}</td>
                 <td>${learner.name}</td>
                 <td><input type="checkbox" name="learnersID" value="${learner.id}"></td>
             </tr>
         `
-        $("#enrolledLearners").append(list_learners)
+
     }
+
+    $("#enrolledLearners").html(list_learners)
+
+    return data.learner
 }
-getClassLearners()
 
 async function getClasses() {
     const params = new URLSearchParams(window.location.search)
@@ -258,6 +357,7 @@ async function getClasses() {
 
     else {
         for (const classes of data.class) {
+            console.log(classes)
             cards = `
                 <div class="card mb-4">
                     <div class="card-body">
@@ -267,33 +367,45 @@ async function getClasses() {
                         <p class="card-text"><strong>Class end date: ${classes.end_date}</strong></p>
                         <p class="card-text"><strong>Class start time: ${classes.class_start_time}</strong></p>
                         <p class="card-text"><strong>Class end time: ${classes.class_end_time}</strong></p>
-                        <p class="card-text"><strong>Trainer: ${classes.trainer_id}</strong></p>
-                        <button type="button" class="btn btn-secondary mb-3" onclick="showtable(${classes.id})">View available learners and trainers</button>
-                        <button type="button" class="btn btn-secondary" style="margin-bottom:5px" onclick="showtable2(${classes.id})">View enrolled learners</button>
+                        <p class="card-text"><strong>Trainer: ${showTrainer(classes.trainer)}</strong></p>
+                        <button type="button" class="btn btn-secondary mb-3" onclick="showtable(${classes.id})">View available learners and trainers</button></br>
+                        <button type="button" class="btn btn-secondary" onclick="showtable2(${classes.id})">View enrolled learners</button>
                     </div>
                 </div>`
             $("#cardColumns").append(cards)
         }
     }
 }
-getClasses()
 
+function showTrainer(trainer) {
+    console.log(trainer)
+    for (trainer_name in trainer) {
+        return trainer[trainer_name]
+    }
+}
 
-// function getTrainerName(input) {
-//     for (i in input) {
-//         return input[i]
-//     }
-// }
-
-
-function showtable(classID) {
+async function showtable(classID) {
     class_id = classID
-    $("#table").show();
+
+    const assignedLearners = (await getClassLearners(class_id)).map(learner => learner.id)
+    const filteredLeaners = allLearners.filter(learner => !assignedLearners.includes(learner.id))
+    renderLearners(filteredLeaners)
+
+    $("#nonassigned-learner-table").show();
+    $("#trainer-table").show();
+    $("#assigned-learner-table").hide();
+    $('#assign-btn').show()
+    $('#withdraw-btn').hide()
 }
 
 function showtable2(classID) {
     class_id = classID
+
     getClassLearners(class_id)
-    $("#table2").show();
+    $("#nonassigned-learner-table").hide();
+    $("#trainer-table").hide();
+    $("#assigned-learner-table").show();
+    $('#assign-btn').hide()
+    $('#withdraw-btn').show()
 }
 
