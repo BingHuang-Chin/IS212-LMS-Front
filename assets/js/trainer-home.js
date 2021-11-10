@@ -9,11 +9,14 @@ $(document).ready(async function () {
     $("#quiz-list").first().append(`
       <div class="card mb-4">
         <div class="d-flex card-body justify-content-between align-items-center">
-          <p class="mb-0">${title}</p>
+          <div>
+            <p class="mb-0">${title}</p>
+            <span class="badge rounded-pill bg-secondary">Time limit: ${time_limit} minutes</span>
+          </div>
 
           <div>
             <button class="btn text-danger" onclick="onRemoveQuiz(${id})">Delete</button>
-            <button class="btn">Edit</button>
+            <a class="btn" href="/pages/create-quiz?quiz=${id}">Edit</a>
           </div>
         </div>
       </div>
