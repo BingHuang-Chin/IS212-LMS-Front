@@ -1,4 +1,5 @@
 const GRAPHQL_ENDPOINT = "http://localhost:8080/v1/graphql"
+const FAKE_LEARNER_ID = 1
 
 $(document).ready(async function () {
   $('#header').load("/common/navbar.html")
@@ -64,6 +65,46 @@ function renderCourseList (courses) {
   })
 }
 
-function onEnrolCourse(courseId) {
-  
+async function onEnrolCourse (courseId) {
+  const learnerId = FAKE_LEARNER_ID // TODO: Replace with actual learner id
+
+  const response = await fetch(GRAPHQL_ENDPOINT, {
+    method: "POST",
+    headers: {
+      'Content-Type': 'application/json',
+      'authorization': getIdToken(),
+    },
+    body: JSON.stringify({
+      query: `
+        mutation {
+          enrolCourse(object: {courseId: ${courseId}, learnerId: ${learnerId}}) {
+            status
+            message
+          }
+        }
+      `
+    })
+  })
+
+  const { errors, data } = await response.json()
+  if (errors)
+    return Swal.fire({
+      title: 'Error!',
+      text: 'Something went wrong.',
+      icon: 'error'
+    })
+
+  const { status, message } = data
+  if (status !== 200)
+    return Swal.fire({
+      title: 'Error!',
+      text: message,
+      icon: 'error'
+    })
+
+  Swal.fire({
+    title: 'Success!',
+    text: message,
+    icon: 'success'
+  })
 }
