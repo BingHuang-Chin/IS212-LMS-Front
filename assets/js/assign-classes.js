@@ -42,8 +42,8 @@ async function enrolLearnersAndTrainers() {
         object['class_id'] = parseInt(class_id)
         object_array.push(object)
     }
-    console.log(object_array)
-
+    
+    updateClassTrainer(class_id,trainer_id)
 
     const response = await fetch(GRAPHQL_ENDPOINT, {
         method: 'POST',
@@ -75,13 +75,46 @@ async function enrolLearnersAndTrainers() {
     }
 
     Swal.fire({
-        title: 'Learners and trainer added!',
+        title: 'Success!',
         text: 'Learners and Trainer has been successfully added',
         icon: 'success'
     }).then(result => {
         if (result.isDismissed || result.isConfirmed)
             location.reload()
     })
+}
+
+async function updateClassTrainer() {
+
+    const response = await fetch(GRAPHQL_ENDPOINT, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'authorization': getIdToken(),
+        },
+        body: JSON.stringify({
+            query: `
+                mutation MyMutation {
+                    update_class(where: {id: {_eq: ${class_id}}}, _set: {trainer_id: ${trainer_id}})
+                    {
+                    affected_rows
+                    }
+                }
+            `
+        })
+    })
+    const { errors, data } = await response.json()
+    if (errors) {
+        Swal.fire({
+            title: 'Error!',
+            text: 'Failed to update trainer in this class!',
+            icon: 'error'
+        }).then(result => {
+            if (result.isDismissed || result.isConfirmed)
+                location.reload()
+        })
+        return
+    }
 }
 
 async function withdrawLearners() {
@@ -91,7 +124,6 @@ async function withdrawLearners() {
         learners_array.push(parseInt($(this).val()));
     });
 
-    console.log(learners_array)
     const response = await fetch(GRAPHQL_ENDPOINT, {
         method: 'POST',
         headers: {
@@ -119,7 +151,7 @@ async function withdrawLearners() {
         return
     }
     Swal.fire({
-        title: 'Learners withdrawed!',
+        title: 'Success!',
         text: 'Successfully withdrawed learners',
         icon: 'success'
     }).then(result => {
@@ -325,6 +357,7 @@ async function getClasses() {
 
     else {
         for (const classes of data.class) {
+            console.log(classes)
             cards = `
                 <div class="card mb-4">
                     <div class="card-body">
@@ -334,7 +367,7 @@ async function getClasses() {
                         <p class="card-text"><strong>Class end date: ${classes.end_date}</strong></p>
                         <p class="card-text"><strong>Class start time: ${classes.class_start_time}</strong></p>
                         <p class="card-text"><strong>Class end time: ${classes.class_end_time}</strong></p>
-                        <p class="card-text"><strong>Trainer: ${classes.trainer_id}</strong></p>
+                        <p class="card-text"><strong>Trainer: ${showTrainer(classes.trainer)}</strong></p>
                         <button type="button" class="btn btn-secondary mb-3" onclick="showtable(${classes.id})">View available learners and trainers</button></br>
                         <button type="button" class="btn btn-secondary" onclick="showtable2(${classes.id})">View enrolled learners</button>
                     </div>
@@ -344,6 +377,12 @@ async function getClasses() {
     }
 }
 
+function showTrainer(trainer) {
+    console.log(trainer)
+    for (trainer_name in trainer) {
+        return trainer[trainer_name]
+    }
+}
 
 async function showtable(classID) {
     class_id = classID
