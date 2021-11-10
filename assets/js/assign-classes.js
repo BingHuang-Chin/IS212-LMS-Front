@@ -7,6 +7,7 @@ $(document).ready(async function () {
     $('#assigned-learner-table').hide()
     $('#trainer-table').hide()
     $('#assign-btn').hide()
+    $('#withdraw-btn').hide()
 
     const [_, __, learners] = await Promise.all([
         getClasses(),
@@ -83,9 +84,51 @@ async function enrolLearnersAndTrainers() {
     })
 }
 
-function checkTrainer() {
+async function withdrawLearners() {
+    learners_array = []
 
+    $("input:checkbox[name=learnersID]:checked").each(function () {
+        learners_array.push(parseInt($(this).val()));
+    });
+
+    console.log(learners_array)
+    const response = await fetch(GRAPHQL_ENDPOINT, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'authorization': getIdToken(),
+        },
+        body: JSON.stringify({
+            query: `
+                mutation MyMutation {
+                    delete_enrolment(where: {learner_id: {_in:[${learners_array}]}}) {
+                        affected_rows
+                    }
+                }
+            `
+        })
+    })
+    const { errors, data } = await response.json()
+    if (errors) {
+        Swal.fire({
+            title: 'Error!',
+            text: 'Failed to withdraw learners!',
+            icon: 'error'
+
+        })
+        return
+    }
+    Swal.fire({
+        title: 'Learners withdrawed!',
+        text: 'Successfully withdrawed learners',
+        icon: 'success'
+    }).then(result => {
+        if (result.isDismissed || result.isConfirmed)
+            location.reload()
+    })
+    return
 }
+
 async function getLearners() {
     const response = await fetch(GRAPHQL_ENDPOINT, {
         method: 'POST',
@@ -313,6 +356,7 @@ async function showtable(classID) {
     $("#trainer-table").show();
     $("#assigned-learner-table").hide();
     $('#assign-btn').show()
+    $('#withdraw-btn').hide()
 }
 
 function showtable2(classID) {
@@ -323,5 +367,6 @@ function showtable2(classID) {
     $("#trainer-table").hide();
     $("#assigned-learner-table").show();
     $('#assign-btn').hide()
+    $('#withdraw-btn').show()
 }
 
