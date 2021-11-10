@@ -102,6 +102,7 @@ async function postDataToHasura (query) {
 }
 
 async function insertSelectedOptions (attempt, quizId, questionId, selectedOption) {
+  console.log("testing")
   const query = `
     mutation {
       insert_selected_options_one(object: {attempt: ${attempt}, learner_id: 1, option_id: ${selectedOption}, quiz_id: ${quizId}, question_id: ${questionId}}, on_conflict: {constraint: selected_options_pkey, update_columns: option_id}) {

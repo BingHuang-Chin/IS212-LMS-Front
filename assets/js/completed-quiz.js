@@ -1,15 +1,14 @@
 const GRAPHQL_ENDPOINT = "http://localhost:8080/v1/graphql"
 const params = new URLSearchParams(window.location.search) // use the prev URL
+
 const course_id = params.get("cid")
 const quizId = params.get("qid")
-
 
 async function exitButton(){
   
   toExit = `
   <a href="http://localhost:3000/pages/course_content?id=${course_id}" class="button">Exit Quiz</a>
   `
-  console.log(toExit)
   document.getElementById('exitButton').innerHTML += toExit
 }
 exitButton()
@@ -30,7 +29,7 @@ async function updateCompletedQuiztable(quiz_attempt, pof) {
       query:
         `
           mutation {
-            update_completed_quiz(where: {attempt: {_eq: ${quiz_attempt}}, learner_id: {_eq: 1}},_set:{if_passed:"${pof}"}){
+            update_completed_quiz(where: {attempt: {_eq: ${quiz_attempt}}, learner_id: {_eq: 1}},_set:{passed:"${pof}"}){
               affected_rows
             }
           }
@@ -38,24 +37,7 @@ async function updateCompletedQuiztable(quiz_attempt, pof) {
 
     })
   })
-  // const { errors } = await response.json()
-  // if (errors) {
-  //   Swal.fire({
-  //     title: 'Error!',
-  //     text: 'Failed to add learners and trainer at the moment',
-  //     icon: 'error'
-  //   })
-  //   return
-  // }
 
-  // Swal.fire({
-  //   title: 'Learners and trainer added!',
-  //   text: 'Learners and Trainer has been successfully added',
-  //   icon: 'success'
-  // }).then(result => {
-  //   if (result.isDismissed || result.isConfirmed)
-  //     location.reload()
-  // })
 }
 
 
@@ -87,7 +69,9 @@ async function getQuizResults(title, sectionId, counter) {
   })
 
   const dataset = await response.json()
+  console.log(dataset)
   const allCompletedquizzes = dataset.data.completed_quiz
+  console.log(allCompletedquizzes, "smth wrong here")
 
   // DISPLAY ALL THE UNIQUE WEEKS 
   oneRow = ''
@@ -95,7 +79,7 @@ async function getQuizResults(title, sectionId, counter) {
   let passingGrade = counter / 2
 
   for (eachQuiz of allCompletedquizzes) {
-    // console.log(eachQuiz)
+    console.log(eachQuiz)
     overallGrade = (eachQuiz.score / counter) * 100
     overallGrade = parseFloat(overallGrade).toFixed(2);
 
@@ -109,17 +93,17 @@ async function getQuizResults(title, sectionId, counter) {
     // console.log(eachQuiz.score)
 
     if (eachQuiz.score < passingGrade) {
-      pof = "Failed"
+      pof = false
       // console.log(eachQuiz.score / counter)
       oneRow += `
       <th style="color:#ff3333">Failed</th>`
       // console.log(eachQuiz.score, pof)
-      
+      console.log(pof)
       updateCompletedQuiztable(eachQuiz.attempt, pof)
     }
 
     else {
-      pof = "Passed"
+      pof = true
       oneRow += `
       <th style="color:#3CB371">Passed</th>`
       // console.log(eachQuiz.score, pof)
@@ -164,26 +148,25 @@ async function getQuizTitle() {
   })
   const dataset = await response.json()
   const allQuestions = dataset.data.quiz[0].questions
+  // console.log(allQuestions)
   let counter = 0
   for (question of allQuestions) {
     // console.log(question)
     counter += 1
   }
-  // console.log(counter)
-
 
   const title = dataset.data.quiz[0].title
   const sectionId = dataset.data.quiz[0].section_id
 
-
+  console.log("fuck", sectionId, title, counter)
   getQuizResults(title, sectionId, counter)
 
 }
 
 getQuizTitle()
 
-let counter = 0
-for (question of allQuestions) {
-  console.log(question)
-  counter += 1
-}
+// let counter = 0
+// for (question of allQuestions) {
+//   console.log(question)
+//   counter += 1
+// }

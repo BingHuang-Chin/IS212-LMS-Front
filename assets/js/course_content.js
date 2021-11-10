@@ -66,7 +66,7 @@ async function getmaterials(){
     for(individual_week of week_array){
         week_dropdown += `
         <li class="active" id=${individual_week}>
-            <a href="#homeSubmenu${individual_week}" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Week ${individual_week}</a>
+            <a href="#homeSubmenu${individual_week}" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Section ${individual_week}</a>
             <ul class="collapse list-unstyled" id="homeSubmenu${individual_week}"> `
             for(individual_materials of materials){
                 if(individual_week == individual_materials.week){
@@ -84,7 +84,7 @@ async function getmaterials(){
         `
     }
     document.getElementById('displaysidechapter').innerHTML= week_dropdown
-
+    console.log(materials)
     document.getElementById('coursetitle').innerHTML= materials[0].description
 }
 getmaterials()
