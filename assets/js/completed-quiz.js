@@ -14,31 +14,31 @@ async function exitButton(){
 exitButton()
 
 
-async function updateCompletedQuiztable(quiz_attempt, pof) {
-  // console.log(pof)
-  // console.log(quiz_id)
+// async function updateCompletedQuiztable(quiz_attempt, pof) {
+//   // console.log(pof)
+//   // console.log(quiz_id)
 
-  const response = await fetch(GRAPHQL_ENDPOINT, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'authorization': getIdToken(),
-    },
+//   const response = await fetch(GRAPHQL_ENDPOINT, {
+//     method: 'POST',
+//     headers: {
+//       'Content-Type': 'application/json',
+//       'authorization': getIdToken(),
+//     },
 
-    body: JSON.stringify({
-      query:
-        `
-          mutation {
-            update_completed_quiz(where: {attempt: {_eq: ${quiz_attempt}}, learner_id: {_eq: 1}},_set:{passed:"${pof}"}){
-              affected_rows
-            }
-          }
-          `
+//     body: JSON.stringify({
+//       query:
+//         `
+//           mutation {
+//             update_completed_quiz(where: {attempt: {_eq: ${quiz_attempt}}, learner_id: {_eq: 1}},_set:{passed:"${pof}"}){
+//               affected_rows
+//             }
+//           }
+//           `
 
-    })
-  })
+//     })
+//   })
 
-}
+// }
 
 
 async function getQuizResults(title, sectionId, counter) {
@@ -96,7 +96,7 @@ async function getQuizResults(title, sectionId, counter) {
       <th style="color:#ff3333">Failed</th>`
       // console.log(eachQuiz.score, pof)
       console.log(pof)
-      updateCompletedQuiztable(eachQuiz.attempt, pof)
+      // updateCompletedQuiztable(eachQuiz.attempt, pof)
     }
 
     else {
@@ -105,7 +105,7 @@ async function getQuizResults(title, sectionId, counter) {
       <th style="color:#3CB371">Passed</th>`
       // console.log(eachQuiz.score, pof)
 
-      updateCompletedQuiztable(eachQuiz.attempt, pof)
+      // updateCompletedQuiztable(eachQuiz.attempt, pof)
     }
 
     oneRow += `
@@ -161,8 +161,3 @@ async function getQuizTitle() {
 
 getQuizTitle()
 
-// let counter = 0
-// for (question of allQuestions) {
-//   console.log(question)
-//   counter += 1
-// }
