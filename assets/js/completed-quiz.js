@@ -41,8 +41,6 @@ async function updateCompletedQuiztable(quiz_attempt, pof) {
 }
 
 
-
-
 async function getQuizResults(title, sectionId, counter) {
   const response = await fetch(GRAPHQL_ENDPOINT, {
     method: 'POST',
@@ -71,7 +69,6 @@ async function getQuizResults(title, sectionId, counter) {
   const dataset = await response.json()
   console.log(dataset)
   const allCompletedquizzes = dataset.data.completed_quiz
-  console.log(allCompletedquizzes, "smth wrong here")
 
   // DISPLAY ALL THE UNIQUE WEEKS 
   oneRow = ''
@@ -158,7 +155,6 @@ async function getQuizTitle() {
   const title = dataset.data.quiz[0].title
   const sectionId = dataset.data.quiz[0].section_id
 
-  console.log("fuck", sectionId, title, counter)
   getQuizResults(title, sectionId, counter)
 
 }

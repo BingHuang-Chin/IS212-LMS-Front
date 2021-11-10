@@ -3,6 +3,14 @@ const GRAPHQL_ENDPOINT = "http://localhost:8080/v1/graphql"
 const params = new URLSearchParams(window.location.search) // use the prev URL
 const course_id = params.get("id")
 // console.log(course_id)
+
+async function viewCourseProgressBtn(){
+    courseProgress = `
+    <a href="http://localhost:3000/pages/progress-bar?id=${course_id}" class="button">View Course Progress </a>
+    `
+    document.getElementById('progressBar').innerHTML += courseProgress
+}
+viewCourseProgressBtn()
  
     $(document).ready(function () {
     $("#sidebar").mCustomScrollbar({
@@ -88,4 +96,15 @@ async function getmaterials(){
     document.getElementById('coursetitle').innerHTML= materials[0].description
 }
 getmaterials()
- 
+
+
+// <div class="row d-flex justify-content-center mt-100">
+//     <div class="col-md-6">
+//         <div class="progress blue"> <span class="progress-left"> <span class="progress-bar"></span> </span> <span class="progress-right"> <span class="progress-bar"></span> </span>
+//             <div class="progress-value">90%</div>
+//         </div>
+//         <div class="progress yellow"> <span class="progress-left"> <span class="progress-bar"></span> </span> <span class="progress-right"> <span class="progress-bar"></span> </span>
+//             <div class="progress-value">37.5%</div>
+//         </div>
+//     </div>
+// </div>
