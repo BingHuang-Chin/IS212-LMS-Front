@@ -54,7 +54,6 @@ function renderCourseList (courses) {
             <h5 class="card-title">${title}</h5>
             <p>${description}</p>
           </div>
-
           <footer class="fs-6 text-secondary text-end px-3 pb-2">
             <button class="d-block ms-auto btn btn-primary" onclick="onEnrolCourse(${id})">Enrol</button>
             <span>Enrolment: ${enrolment_start_date} - ${enrolment_end_date}</span>
@@ -66,8 +65,9 @@ function renderCourseList (courses) {
 }
 
 async function onEnrolCourse (courseId) {
-  const [classes, vacancy] = await getAvailableClasses(courseId)
+  const [classes, vacancy, userEnrolments] = await getAvailableClasses(courseId)
   let classElement = ''
+  const enroledClasses = userEnrolments.map(enrolment => enrolment.class_id)
 
   for (const lesson of classes) {
     const { id, class_size, name, class_start_time, class_end_time } = lesson
@@ -78,11 +78,17 @@ async function onEnrolCourse (courseId) {
       ? class_size
       : class_size - vacancy[id]
 
+    const isEnroled = enroledClasses.findIndex(enroledClass => enroledClass === id) >= 0
+
     classElement += `
       <div class="col card mb-2">
         <div class="card-body">
           <h5 class="card-title">${name}</h5>
           <p>Space left: ${actualClassSize}</p>
+
+          <button class="btn ${isEnroled ? "btn-success pe-none" : "btn-primary"}" onclick="onClassSelected(${courseId}, ${id})">
+            ${isEnroled ? "Enroled" : "Enrol"}
+          </button>
         </div>
       </div>
     `
@@ -104,6 +110,8 @@ async function onEnrolCourse (courseId) {
 }
 
 async function getAvailableClasses (courseId) {
+  const learnerId = FAKE_LEARNER_ID
+
   const response = await fetch(GRAPHQL_ENDPOINT, {
     method: "POST",
     headers: {
@@ -122,11 +130,15 @@ async function getAvailableClasses (courseId) {
               class_end_time
             }
             
-            enrolments(where: { status_id: { _eq: 2 } }) {
+            capacity: enrolments(where: {status_id: {_eq: 2}}) {
+              class_id
+            }
+            
+            learnerEnrolments: enrolments(where: {learner_id: {_eq: ${learnerId}}}) {
               class_id
             }
           }
-        }
+        }      
         `
     })
   })
@@ -139,20 +151,22 @@ async function getAvailableClasses (courseId) {
       icon: 'error'
     })
 
-  const { classes, enrolments } = data.course_by_pk
+  const { classes, capacity, learnerEnrolments } = data.course_by_pk
   const enrolmentDict = {}
 
-  enrolments.forEach(({ class_id }) => {
+  capacity.forEach(({ class_id }) => {
     if (enrolmentDict[class_id] === undefined)
       enrolmentDict[class_id] = 1
     else
       enrolmentDict[class_id] += 1
   })
 
-  return [classes, enrolmentDict]
+  return [classes, enrolmentDict, learnerEnrolments]
 }
 
 async function onClassSelected (courseId, classId) {
+  console.log(courseId, classId)
+
   // const learnerId = FAKE_LEARNER_ID // TODO: Replace with actual learner id
 
   // const response = await fetch(GRAPHQL_ENDPOINT, {
