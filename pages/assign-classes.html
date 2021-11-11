@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LMS - AIO Learning Management System</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.1/css/bootstrap.min.css"
+        integrity="sha512-6KY5s6UI5J7SVYuZB4S/CZMyPylqyyNZco376NM2Z8Sb8OxEdp02e1jkKk/wZxIEmjQ6DRCEBhni+gpr9c4tvA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.1.1/flatly/bootstrap.min.css"
+        integrity="sha512-A6eytCnxDsOtfv6WqcF+KeZitCIo1SE9CR7wy572XUNV3r2y/QG/CVWlf0zwHfoVrD6kctgnAA3KX4PpbOEp5w=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/11.1.7/sweetalert2.min.css"
+      integrity="sha512-cyIcYOviYhF0bHIhzXWJQ/7xnaBuIIOecYoPZBgJHQKFPo+TOBA+BY1EnTpmM8yKDU4ZdI3UGccNGCEUdfbBqw=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+</head>
+
+
+
+
+<body class="vw-100 vh-100">
+    <div id="header"></div>
+
+    <div class="row m-0">
+        <div class="col-4 mb-4 mt-4">
+            <div id="cardColumns">
+            </div>
+        </div>
+        <div class="col-8">
+            <table id="nonassigned-learner-table" class="table mt-4 m-0">
+                <thead>
+                    <tr>
+                        <th scope="col">Learner ID</th>
+                        <th scope="col">Learner Name</th>
+                        <th scope="col"></th>
+                    </tr>
+                </thead>
+                <tbody style="margin-bottom: 10px;" id="learnerDetails"></tbody>
+            </table>
+            <table id="trainer-table" class="table mt-5 m-0">
+                <thead>
+                    <tr>
+                        <th scope="col">Trainer ID</th>
+                        <th scope="col">Trainer Name</th>
+                        <th scope="col"></th>
+                    </tr>
+                </thead>
+                <tbody id="tainerDetails"></tbody>
+            </table>
+
+            <table id="assigned-learner-table" class="table mt-4 m-0">
+                <thead>
+                    <tr>
+                        <th scope="col">Learner ID</th>
+                        <th scope="col">Learner Name</th>
+                        <th scope="col"></th>
+                    </tr>
+                </thead>
+                <tbody style="margin-bottom: 10px;" id="enrolledLearners"></tbody>
+            </table>
+            <button id="withdraw-btn" type="button" class="btn btn-secondary mt-4 float-end me-3"
+                onclick="withdrawLearners()">Withdraw</button>
+            <button id="assign-btn" type="button" class="btn btn-secondary mt-4 float-end me-3"
+                onclick="enrolLearnersAndTrainers()">Assign</button>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
+        integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/auth0-js/9.16.4/auth0.min.js"
+        integrity="sha512-BaGDtTEN7xL0GZLlmhJ8Ap6h6OExOn+Fc6jGUFJEYFmBymBczqnWcg3oRo3dbFVGNmLus+BGIXFzclZMqs/PLw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/11.1.7/sweetalert2.min.js"
+        integrity="sha512-7YvQulGlfsi8ex5zsjMHDqwEj7jNLCcVD9sXbgwp1wScakmCR+Pj66HjDJoaZ7/yZ/f9pIvX293Ac6S3HE47nA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/luxon/2.0.2/luxon.min.js"></script>
+    <script defer src="/assets/js/common/authentication.js"></script>
+    <script defer src="/assets/js/assign-classes.js"></script>
+</body>
+
+</html>

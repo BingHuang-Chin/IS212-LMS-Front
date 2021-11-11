@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>LMS - Mock login with Access Control</title>
+    <title>LMS - Learner Self-Enrolment</title>
 
     <link
       rel="stylesheet"
@@ -20,46 +20,23 @@
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/11.1.7/sweetalert2.min.css"
+      integrity="sha512-cyIcYOviYhF0bHIhzXWJQ/7xnaBuIIOecYoPZBgJHQKFPo+TOBA+BY1EnTpmM8yKDU4ZdI3UGccNGCEUdfbBqw=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
   </head>
-  <body class="vw-100 vh-100">
-    <div class="w-100 h-100 d-flex flex-column justify-content-center align-items-center">
-      <div class="text-center mb-4" style="width: 24rem">
-        <h1>Mock login</h1>
-        <p class="text-secondary">
-          This login will be replaced with Azure SSO when integration is ready
-          to be implemented.
-        </p>
-      </div>
 
-      <div class="card mb-5" style="width: 24rem">
-        <div class="card-body">
-          <h5 class="card-title">Login as Human Resource</h5>
-          <div class="card-text">
-            <p>Access course management features.</p>
-          </div>
-          <a class="btn btn-primary" onclick="loginAsHr('pages/hr-homepage')">Continue</a>
-        </div>
-      </div>
+  <body>
+    <!-- You body elements go here -->
+    <div id="header"></div>
 
-      <div class="card mb-5" style="width: 24rem">
-        <div class="card-body">
-          <h5 class="card-title">Login as Trainer</h5>
-          <div class="card-text">
-            <p>Access course management features.</p>
-          </div>
-          <a class="btn btn-primary" onclick="loginAsTrainer('pages/trainer-home')">Continue</a>
-        </div>
-      </div>
+    <div class="container">
+      <h1 class="my-4">Courses</h1>
 
-      <div class="card" style="width: 24rem">
-        <div class="card-body">
-          <h5 class="card-title">Login as Leaner</h5>
-          <div class="card-text">
-            <p>Access course management features.</p>
-          </div>
-          <a class="btn btn-primary" onclick="loginAsLearner('pages/accept-reject')">Continue</a>
-        </div>
-      </div>
+      <div id="course-list" class="row row-cols-2"></div>
     </div>
 
     <script
@@ -80,7 +57,20 @@
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/11.1.7/sweetalert2.min.js"
+      integrity="sha512-7YvQulGlfsi8ex5zsjMHDqwEj7jNLCcVD9sXbgwp1wScakmCR+Pj66HjDJoaZ7/yZ/f9pIvX293Ac6S3HE47nA=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/luxon/2.1.1/luxon.min.js"
+      integrity="sha512-R3qVfQx4LUWixeZgtptH0NDb+/FB8qVflpPQUKzDQlz1zKE3BiN4wG3aBUwzabgMo/45MXHucjcC2/BWBxMJwQ=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+
     <script defer src="/assets/js/common/authentication.js"></script>
-    <script defer src="/assets/js/mock-login.js"></script>
+    <script defer src="/assets/js/self-enrolment.js"></script>
   </body>
 </html>

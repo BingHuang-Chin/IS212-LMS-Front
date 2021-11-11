@@ -1,25 +1,5 @@
 const GRAPHQL_ENDPOINT = "http://localhost:8080/v1/graphql"
 
-const HTML_ELEMENTS = {
-  addOptionClass: ".add-option",
-  optionsClass: ".options",
-  optionInputTemplateId: "#option-input-template",
-  radioButtonClass: ".form-check-input",
-  inputClass: ".form-control",
-  questionBodyId: "#question-body",
-  questionTemplateId: "#question-template",
-  questionTitleClass: ".question-display",
-  questionTypeClass: ".question-type",
-  questionInfoClass: ".question-info",
-  questionClass: ".question",
-  quizTitleId: "#quiz-title",
-  sectionSelectId: "#section-id",
-  timeLimitId: "#time-limit",
-  submitQuizId: "#submit-quiz",
-  hiddenInputTemplateId: "#hidden-input-template",
-  uidInputClass: ".uid"
-}
-
 const QUESTION_TYPES = {
   mcq: "1",
   trueFalse: "2"
@@ -28,31 +8,29 @@ const QUESTION_TYPES = {
 const generateQuestionCard = question => {
   createQuiz.ensureQuestionTypes()
 
-  const totalQuestions = $(HTML_ELEMENTS.questionBodyId).children().length
-  const questionElement = $($(HTML_ELEMENTS.questionTemplateId).html())
+  const totalQuestions = UiElements.getQuestionLength()
+  const questionElement = UiElements.cloneElement(UiElements.questionTemplateId)
 
   // Setup question number
-  const questionHeaderElement = $(questionElement).find(HTML_ELEMENTS.questionTitleClass)[0]
-  $(questionHeaderElement).html(`Question ${totalQuestions + 1}`)
+  const questionHeaderElement = UiElements.findOneFromParent(questionElement, UiElements.questionTitleClass)
+  questionHeaderElement.html(`Question ${totalQuestions + 1}`)
 
   // Setup change listener for question type dropdown
-  const questionTypeDropdownElement = $(questionElement).find(HTML_ELEMENTS.questionTypeClass)[0]
-  $(questionTypeDropdownElement).attr("onchange", `onQuestionTypeChange(this, ${totalQuestions})`)
-  $(questionTypeDropdownElement).val(question ? question.question_type_id : null)
+  const questionTypeDropdownElement = UiElements.findOneFromParent(questionElement, UiElements.questionTypeClass)
+  questionTypeDropdownElement.attr("onchange", `onQuestionTypeChange(this, ${totalQuestions})`)
+  questionTypeDropdownElement.val(question ? question.question_type_id : null)
 
   // Setup event listener for adding new options
-  const addOptionButtonElement = $(questionElement).find(HTML_ELEMENTS.addOptionClass)[0]
-  $(addOptionButtonElement).attr("onclick", `generateOption(this, ${totalQuestions})`)
+  const addOptionButtonElement = UiElements.findOneFromParent(questionElement, UiElements.addOptionClass)
+  addOptionButtonElement.attr("onclick", `generateOption(this, ${totalQuestions})`)
 
   if (question) {
     // Setup hidden input to contain uid
-    const uidInputElement = $($(HTML_ELEMENTS.hiddenInputTemplateId).html())
-    $(uidInputElement).val(question.id)
-    $(questionElement).append(uidInputElement)
+    const uidInputElement = UiElements.generateHiddenInput(UiElements.questionUidClass, question.id)
+    UiElements.appendElement(questionElement, uidInputElement)
 
-    // Setup question title, which will be the first input
-    const questionTitleElement = $(questionElement).find(HTML_ELEMENTS.inputClass)[0]
-    $(questionTitleElement).val(question.title)
+    const questionTitleElement = UiElements.findOneFromParent(questionElement, UiElements.questionInputClass)
+    questionTitleElement.val(question.title)
 
     question.question_options.forEach(option =>
       generateOption(addOptionButtonElement, totalQuestions, { value: option.title, checked: option.is_answer, id: option.id }))
@@ -62,55 +40,52 @@ const generateQuestionCard = question => {
     generateOption(addOptionButtonElement, totalQuestions, { checked: true })
   }
 
-  $(HTML_ELEMENTS.questionBodyId).append(questionElement)
+  UiElements.appendElement(UiElements.questionListId, questionElement)
 }
 
 const generateOption = (element, questionNumber, { checked = false, value = "", id = null } = {}) => {
-  const parents = $(element).parents()
-  const cardElement = parents[2]
+  const cardElement = UiElements.findOneFromChild(element, UiElements.questionCardClass)
+  const optionInputElement = UiElements.cloneElement(UiElements.optionTemplateId)
 
-  const optionInputElement = $($(HTML_ELEMENTS.optionInputTemplateId).html())
-  const radioButtonElement = $(optionInputElement).find(HTML_ELEMENTS.radioButtonClass)[0]
-  $(radioButtonElement).attr("name", `question-${questionNumber}`)
-  $(radioButtonElement).attr("checked", checked)
+  const radioButtonElement = UiElements.findOneFromParent(optionInputElement, UiElements.optionRadioClass)
+  radioButtonElement.attr("name", `question-${questionNumber}`)
+  radioButtonElement.attr("checked", checked)
 
   if (value)
-    $(optionInputElement).find(HTML_ELEMENTS.inputClass).val(value)
+    UiElements.findOneFromParent(optionInputElement, UiElements.optionInputClass).val(value)
 
   // Setup hidden input to contain uid
   if (id) {
-    const uidInputElement = $($(HTML_ELEMENTS.hiddenInputTemplateId).html())
-    $(uidInputElement).val(id)
-    $(optionInputElement).append(uidInputElement)
+    const uidInputElement = UiElements.generateHiddenInput(UiElements.optionUidClass, id)
+    UiElements.appendElement(optionInputElement, uidInputElement)
   }
 
-  const optionsElement = $(cardElement).find(HTML_ELEMENTS.optionsClass)[0]
-  $(optionsElement).append(optionInputElement)
+  const optionsElement = UiElements.findOneFromParent(cardElement, UiElements.optionListClass)
+  optionsElement.append(optionInputElement)
 }
 
 const onQuestionTypeChange = (element, questionNumber) => {
-  const parents = $(element).parents()
-  const cardElement = parents[3]
+  const cardElement = UiElements.findOneFromChild(element, UiElements.questionCardClass)
 
   const questionType = $(element).val()
+  const addOptionButton = UiElements.findOneFromParent(cardElement, UiElements.addOptionClass)
+
   if (questionType === QUESTION_TYPES.mcq) {
-    const addOptionButton = $(cardElement).find(HTML_ELEMENTS.addOptionClass)[0]
-    $(addOptionButton).removeClass("d-none")
+    addOptionButton.removeClass("d-none")
   }
   else if (questionType === QUESTION_TYPES.trueFalse) {
-    const addOptionButton = $(cardElement).find(HTML_ELEMENTS.addOptionClass)[0]
-    $(addOptionButton).addClass("d-none")
+    addOptionButton.addClass("d-none")
 
-    const optionElements = $(cardElement).find(HTML_ELEMENTS.optionsClass).children()
+    const optionElements = cardElement.find(UiElements.optionListClass).children()
     optionElements.each((index, optionElement) => {
       if (index < 2)
-        $(optionElement).find(HTML_ELEMENTS.inputClass).val(index === 0 ? "True" : "False")
+        UiElements.findOneFromParent(optionElement, UiElements.optionInputClass).val(index === 0 ? "True" : "False")
       else
         $(optionElement).remove()
     })
 
     if (optionElements.length === 1)
-      generateOption($(cardElement).find(HTML_ELEMENTS.addOptionClass)[0], questionNumber, { value: "False" })
+      generateOption(UiElements.findOneFromParent(cardElement, UiElements.addOptionClass), questionNumber, { value: "False" })
   }
 }
 
@@ -171,11 +146,11 @@ const createQuiz = {
       },
       body: JSON.stringify({
         query: `
-          mutation MyMutation($object: quiz_insert_input!) {
+          mutation ($object: quiz_insert_input!) {
             insert_quiz_one(object: $object) {
               id
             }
-          }        
+          }
         `,
         variables: {
           object: quizData
@@ -204,29 +179,27 @@ const createQuiz = {
   },
 
   updateQuestionTypeTemplate: function () {
-    const questionElement = $($(HTML_ELEMENTS.questionTemplateId).html())
-    const questionTypeSelectElement = $(questionElement.find(HTML_ELEMENTS.questionTypeClass)[0])
+    const questionElement = UiElements.cloneElement(UiElements.questionTemplateId)
+    const questionTypeSelectElement = UiElements.findOneFromParent(questionElement, UiElements.questionTypeClass)
 
     this.questionTypes.forEach(questionType => {
       const { id, name } = questionType
       questionTypeSelectElement.append(`<option value="${id}">${name}</option>`)
     })
 
-    $($(HTML_ELEMENTS.questionTemplateId)[0].content.children[0]).replaceWith(questionElement)
+    $($(UiElements.questionTemplateId)[0].content.children[0]).replaceWith(questionElement)
   },
 
   updateSectionOptions: function () {
     this.sections.forEach(section => {
       const { id, name } = section
-      $(HTML_ELEMENTS.sectionSelectId).append(`<option value="${id}">${name}</option>`)
+      $(UiElements.sectionSelectId).append(`<option value="${id}">${name}</option>`)
     })
   }
 }
 
 const updateQuiz = {
   quiz: null,
-
-  queuedDeletionQuery: "",
 
   getQuiz: async function (quizId) {
     const response = await fetch(GRAPHQL_ENDPOINT, {
@@ -276,20 +249,17 @@ const updateQuiz = {
   },
 
   updateQuestionInfoUi: function () {
-    const questionInfoElement = $(HTML_ELEMENTS.questionInfoClass)
-    $(questionInfoElement).find(HTML_ELEMENTS.quizTitleId).val(this.quiz.title),
-      $(questionInfoElement).find(HTML_ELEMENTS.sectionSelectId).val(this.quiz.section_id),
-      $(questionInfoElement).find(HTML_ELEMENTS.timeLimitId).val(this.quiz.time_limit)
+    const questionInfoElement = $(UiElements.questionInfoCardClass)
+    $(questionInfoElement).find(UiElements.quizTitleId).val(this.quiz.title)
+    $(questionInfoElement).find(UiElements.sectionSelectId).val(this.quiz.section_id)
+    $(questionInfoElement).find(UiElements.timeLimitId).val(this.quiz.time_limit)
   },
 
   updateQuestionsUi: function () {
     this.quiz.questions.forEach(question => generateQuestionCard(question))
   },
 
-  modifyQuiz: async function (query) {
-    if (!query && !this.queuedDeletionQuery)
-      return
-
+  modifyQuiz: async function (quizData) {
     const response = await fetch(GRAPHQL_ENDPOINT, {
       method: "POST",
       headers: {
@@ -298,11 +268,16 @@ const updateQuiz = {
       },
       body: JSON.stringify({
         query: `
-          mutation {
-            ${query}
-            ${this.queuedDeletionQuery}
-          }        
-        `
+          mutation($object: UpdateQuizInput!) {
+            updateQuiz(object: $object) {
+              status
+              message
+            }
+          }
+        `,
+        variables: {
+          object: quizData
+        }
       })
     })
 
@@ -337,13 +312,8 @@ const onSubmitQuiz = async () => {
 
   if (!updateQuiz.quiz)
     await createQuiz.postQuiz(quizData)
-  else {
-    const updatedQuestionInfo = getQuestionInfoUpdateQuery(questionInfo)
-    const updatedQuestions = getQuestionUpdateQuery(questions)
-
-    console.log(updatedQuestionInfo)
-    updateQuiz.modifyQuiz(updatedQuestionInfo.concat(updatedQuestions))
-  }
+  else
+    await updateQuiz.modifyQuiz({ ...quizData, id: updateQuiz.quiz.id })
 }
 
 const onCancel = () => {
@@ -351,8 +321,8 @@ const onCancel = () => {
 }
 
 const onOptionRemove = element => {
-  const optionElements = $(element).parents()[1]
-  const optionsLeft = $(optionElements).children().length
+  const optionElements = UiElements.findOneFromChild(element, UiElements.optionListClass)
+  const optionsLeft = optionElements.children().length
 
   if (optionsLeft <= 1) {
     Swal.fire({
@@ -363,24 +333,16 @@ const onOptionRemove = element => {
     return
   }
 
-  const optionElement = $(element).parents()[0]
-  const optionId = parseInt($(optionElement).find(HTML_ELEMENTS.uidInputClass).val())
-  const queryName = `_del_option_${updateQuiz.queuedDeletionQuery.length}`
-  updateQuiz.queuedDeletionQuery += `
-    ${queryName}: delete_question_option_by_pk(id: ${optionId}) {
-      id
-    }
-  `
-
+  const optionElement = UiElements.findOneFromChild(element, UiElements.optionContainerClass)
   $(optionElement).remove()
 }
 
 const getQuestionInformationData = () => {
-  const questionInfoElement = $(HTML_ELEMENTS.questionInfoClass)
+  const questionInfoElement = $(UiElements.questionInfoCardClass)
   const [title, section_id, time_limit] = [
-    $(questionInfoElement).find(HTML_ELEMENTS.quizTitleId).val(),
-    $(questionInfoElement).find(HTML_ELEMENTS.sectionSelectId).val(),
-    $(questionInfoElement).find(HTML_ELEMENTS.timeLimitId).val()
+    $(questionInfoElement).find(UiElements.quizTitleId).val(),
+    parseInt($(questionInfoElement).find(UiElements.sectionSelectId).val()),
+    parseInt($(questionInfoElement).find(UiElements.timeLimitId).val())
   ]
 
   return { title, section_id, time_limit }
@@ -388,10 +350,9 @@ const getQuestionInformationData = () => {
 
 const getQuestionsData = () => {
   const questionsData = []
-  $(HTML_ELEMENTS.questionClass).each((_, cardElement) => {
-    // NOTE: it only retrieves the first input (question-title) value
-    const title = $(cardElement).find(HTML_ELEMENTS.inputClass).val()
-    const question_type_id = parseInt($(cardElement).find(HTML_ELEMENTS.questionTypeClass).val())
+  $(UiElements.questionCardClass).each((_, cardElement) => {
+    const title = UiElements.findOneFromParent(cardElement, UiElements.questionInputClass).val()
+    const question_type_id = parseInt(UiElements.findOneFromParent(cardElement, UiElements.questionTypeClass).val())
     let question = {
       title,
       question_type_id,
@@ -400,7 +361,7 @@ const getQuestionsData = () => {
 
     if (updateQuiz.quiz) {
       // questionId will be appeneded to the last element, we will retrieve from the last element in find
-      const questionId = parseInt($(cardElement).find(HTML_ELEMENTS.uidInputClass).last().val())
+      const questionId = parseInt(UiElements.findOneFromParent(cardElement, UiElements.questionUidClass).val())
 
       if (!isNaN(questionId))
         question = { ...question, id: questionId }
@@ -415,15 +376,15 @@ const getQuestionsData = () => {
 const getOptionsData = (element) => {
   const optionsData = []
   $(element)
-    .find(HTML_ELEMENTS.optionsClass)
+    .find(UiElements.optionListClass)
     .children()
     .each((_, option) => {
-      const is_answer = $(option).find(HTML_ELEMENTS.radioButtonClass).is(":checked")
-      const title = $(option).find(HTML_ELEMENTS.inputClass).val()
+      const is_answer = $(option).find(UiElements.optionRadioClass).is(":checked")
+      const title = $(option).find(UiElements.optionInputClass).val()
       let optionData = { is_answer, title }
 
       if (updateQuiz.quiz) {
-        const optionId = parseInt($(option).find(HTML_ELEMENTS.uidInputClass).val())
+        const optionId = parseInt($(option).find(UiElements.optionUidClass).val())
 
         if (!isNaN(optionId))
           optionData = { ...optionData, id: optionId }
@@ -435,117 +396,6 @@ const getOptionsData = (element) => {
   return { data: optionsData }
 }
 
-const getQuestionInfoUpdateQuery = (questionInfo) => {
-  let query = ""
-  const { title, section_id, time_limit } = updateQuiz.quiz
-
-  if (questionInfo.title != title
-    || questionInfo.section_id != section_id
-    || questionInfo.time_limit != time_limit) {
-    query += `
-      update_quiz_by_pk(pk_columns: {id: ${updateQuiz.quiz.id}}, _set: {
-        section_id: ${questionInfo.section_id},
-        time_limit: ${questionInfo.time_limit},
-        title: "${questionInfo.title}"
-      }) {
-        id
-      }
-  `
-  }
-
-  return query
-}
-
-const getQuestionUpdateQuery = ({ data }) => {
-  let query = ""
-  const orignalQuizState = updateQuiz.quiz.questions
-
-  data.forEach((question, index) => {
-    let queryName = `_question_${index}`
-    const originalQuestion = orignalQuizState.find(q => q.id == question.id)
-
-    if (!originalQuestion) {
-      let newOptionsQuery = ""
-      question.question_options.data.forEach((option, index) => {
-        const comma = index === question.question_options.data.length - 1 ? "" : ","
-        newOptionsQuery += `
-          {
-            is_answer: ${option.is_answer},
-            title: "${option.title}"
-          }${comma}
-        `
-      })
-
-      query += `
-        ${queryName}: insert_question_one(object: {
-          question_type_id: ${question.question_type_id},
-          quiz_id: ${updateQuiz.quiz.id},
-          title: "${question.title}",
-          question_options: {
-            data: [
-              ${newOptionsQuery}
-            ]
-          }
-        }) {
-          id
-        }
-      `
-      return
-    }
-
-    query += getOptionUpdateQuery(originalQuestion.id, question.question_options, originalQuestion.question_options)
-
-    if (originalQuestion.question_type_id != question.question_type_id
-      || originalQuestion.title != question.title) {
-      query += `
-        ${queryName}: update_question_by_pk(pk_columns: {id: ${originalQuestion.id}}, _set: {
-          question_type_id: ${question.question_type_id},
-          title: "${question.title}"
-        }) {
-          id
-        }
-      `
-    }
-  })
-
-  return query
-}
-
-const getOptionUpdateQuery = (questionId, { data }, originalOptions) => {
-  let query = ""
-
-  data.forEach((option, index) => {
-    const queryName = `_option_${questionId}_${index}`
-    const originalOption = originalOptions.find(o => o.id == option.id)
-    if (!originalOption) {
-      query += `
-        ${queryName}: insert_question_option_one(object: {
-          is_answer: ${option.is_answer},
-          question_id: ${questionId},
-          title: "${option.title}"
-        }) {
-          id
-        }
-      `
-      return
-    }
-
-    if (originalOption.is_answer != option.is_answer
-      || originalOption.title != option.title) {
-      query += `
-        ${queryName}: update_question_option_by_pk(pk_columns: {id: ${originalOption.id}}, _set: {
-          title: "${option.title}",
-          is_answer: ${option.is_answer}
-        }) {
-          id
-        }
-      `
-    }
-  })
-
-  return query
-}
-
 $(document).ready(async () => {
   ensureAuthenticated()
 
@@ -555,9 +405,74 @@ $(document).ready(async () => {
   const quizId = params.get("quiz")
   if (quizId) {
     await updateQuiz.getQuiz(quizId)
-    $(HTML_ELEMENTS.submitQuizId).text("Update Quiz")
+    $(UiElements.submitQuizButtonId).text("Update Quiz")
     return
   }
 
   generateQuestionCard()
 })
+
+const UiElements = {
+  // Question info specific element identifiers
+  questionInfoCardClass: ".question-info.card",
+  sectionSelectId: "#section-id",
+  quizTitleId: "#quiz-title",
+  timeLimitId: "#time-limit",
+
+  // Questions specific element identifiers
+  questionUidClass: ".quest-uid",
+  questionTitleClass: ".question-display",
+  questionTypeClass: ".question-type",
+  questionTemplateId: "#question-template",
+  questionListId: "#question-body",
+  questionInputClass: ".question-input",
+  questionCardClass: ".question.card",
+
+  // Options specific element identifiers
+  optionUidClass: ".opt-uid",
+  addOptionClass: ".add-option",
+  optionListClass: ".options",
+  optionRadioClass: ".option-radio",
+  optionInputClass: ".option-input",
+  optionTemplateId: "#option-input-template",
+  optionContainerClass: ".option.container",
+
+  // Generic element identifiers
+  inputClass: ".form-control",
+  radioButtonClass: ".form-check-input",
+  submitQuizButtonId: "#submit-quiz",
+
+  appendElement: function (parentElem, childElem) {
+    if (typeof (parentElem) === "string") {
+      $(parentElem).append(childElem)
+      return
+    }
+
+    $(parentElem).append(childElem)
+  },
+
+  getQuestionLength: function () {
+    return $(this.questionListId).children().length
+  },
+
+  cloneElement: function (uiElementType) {
+    return $($(uiElementType).html())
+  },
+
+  findOneFromParent: function (parentElem, uiElementType) {
+    return $(parentElem).find(uiElementType).first()
+  },
+
+  findOneFromChild: function (childElem, uiElementType) {
+    return $(childElem).parents(uiElementType).first()
+  },
+
+  generateHiddenInput: function (uiElementType, value) {
+    const omitClassAndIdIdentifier = uiElementType.replace(".", "").replace("#", "")
+
+    if (uiElementType.includes("."))
+      return $(`<input type="hidden" class="${omitClassAndIdIdentifier}" value="${value}" />`)
+    else
+      return $(`<input type="hidden" id="${omitClassAndIdIdentifier}" value="${value}" />`)
+  }
+}

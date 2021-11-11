@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <!-- Bootstrap CSS CDN -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+    <!-- Our Custom CSS -->
+    <link rel="stylesheet" href="style2.css">
+    <!-- Scrollbar Custom CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.min.css">
+
+    <!-- Font Awesome JS -->
+    <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/solid.js" integrity="sha384-tzzSw1/Vo+0N5UhStP3bvwWPq+uvzCMfrN1fEFe+xBmv1C/AtVX5K0uZtmcHitFZ" crossorigin="anonymous"></script>
+    <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/fontawesome.js" integrity="sha384-6OIrr52G08NpOFSZdxxz1xdNSndlD4vdcf/q2myIUVO0VsqaGHJsB0RaBE01VTOY" crossorigin="anonymous"></script>
+    
+    <!--bbsteap stuff-->
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Open+Sans&display=swap');
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box
+        }
+
+        body {
+            font-family: 'Work Sans', sans-serif;
+            background: #eee
+        }
+
+        .wrapper {
+            max-width: 600px;
+            margin: 20px auto
+        }
+
+        .content {
+            padding: 20px;
+            padding-bottom: 50px
+        }
+
+        a:hover {
+            text-decoration: none
+        }
+
+        a,
+        span {
+            font-size: 15px;
+            font-weight: 600;
+            color: rgb(50, 141, 245);
+            padding-bottom: 30px
+        }
+
+        p.text-muted {
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 5px
+        }
+
+        b {
+            font-size: 15px;
+            font-weight: bolder
+        }
+
+        .option {
+            display: block;
+            height: 50px;
+            background-color: #f4f4f4;
+            position: relative;
+            width: 100%
+        }
+
+        .option:hover {
+            background-color: #e8e8e8;
+            cursor: pointer
+        }
+
+        .option input {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer
+        }
+
+        .checkmark,
+        .crossmark {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            height: 22px;
+            width: 22px;
+            background-color: #f4f4f4;
+            border-radius: 2px;
+            padding: 0
+        }
+
+        .option:hover input~.checkmark,
+        .option:hover input~.crossmark {
+            background-color: #e8e8e8
+        }
+
+        .option input:checked~.checkmark {
+            background-color: #79d70f
+        }
+
+        .option input:checked~.crossmark {
+            background-color: #ec3838
+        }
+
+        .checkmark:after,
+        .crossmark:after {
+            content: "\2714";
+            position: absolute;
+            background-color: #79d70f;
+            display: none;
+            color: #fff;
+            padding-left: 4px;
+            width: 22px;
+            font-size: 16px
+        }
+
+        .crossmark:after {
+            content: "\2715";
+            background-color: #ec3838
+        }
+
+        .option input:checked~.checkmark:after,
+        .option input:checked~.crossmark:after {
+            display: block;
+            transition: 100ms ease-out 1s
+        }
+
+        p.mb-4 {
+            border-left: 3px solid green
+        }
+
+        p.my-2 {
+            border-left: 3px solid red
+        }
+
+        input[type="button"] {
+            width: 100%;
+            height: 50px;
+            background-color: #229aeb;
+            border: none;
+            outline: none;
+            color: #fff;
+            font-weight: 600;
+            cursor: pointer
+        }
+
+        input[type="button"]:hover:focus {
+            border: none;
+            outline: none;
+            background-color: #229bebad
+        }
+    </style>
+</head>
+<body>
+
+    <div class="wrapper bg-white rounded">
+        <!-- <div class="content"> <a href="#"><span class="fa fa-angle-left pr-2"></span>Back to Question Bank</a> -->
+        <div class="content"> <a href="#"></span>Back to Question Bank</a>
+            <p class="text-muted">Multiple Choice Question</p>
+            <div id="one_question">
+       
+            
+            </div>
+            
+            <!-- <b>Correct Feedback</b>
+            <p class="mt-2 mb-4 pl-2 text-justify"> Well done! He was scared of flying so picked up the parachute from an support store before the trip. He won gold </p> <b>Incorrect Feedback</b>
+            <p class="my-2 pl-2"> That was incorrect. Try again </p> -->
+        </div> <input type="button" id="submitBtn" value="Submit Quiz" class="mx-sm-0 mx-1" onclick="submitQuiz()">
+      
+        
+    </div>
+    
+</body>
+    <!-- Extras-->
+    <script defer src="/assets/js/common/authentication.js"></script>
+    <script defer src="/assets/js/take-quiz.js"></script>
+
+</html>
