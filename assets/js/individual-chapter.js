@@ -36,7 +36,7 @@ async function getmaterials(){
             query:`
               query {
                 course_by_pk(id: ${iid}) {
-                  course_materials {
+                  course_materials(order_by: {week: asc}) {
                     course_id
                     chapter_name
                     course_link
