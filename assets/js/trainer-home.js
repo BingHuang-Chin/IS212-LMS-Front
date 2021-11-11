@@ -1,4 +1,4 @@
-const GRAPHQL_ENDPOINT = "http://localhost:8080/v1/graphql"
+const GRAPHQL_ENDPOINT = getHasuraEndpoint()
 const FAKE_TRAINER_ID = 1
 
 $(document).ready(async function () {

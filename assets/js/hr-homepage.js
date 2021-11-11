@@ -1,2 +1,2 @@
-const GRAPHQL_ENDPOINT = "http://localhost:8080/v1/graphql"
+const GRAPHQL_ENDPOINT = getHasuraEndpoint()
 $('#header').load("/common/hr-navbar.html");
