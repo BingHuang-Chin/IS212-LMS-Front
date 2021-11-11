@@ -1,4 +1,4 @@
-const GRAPHQL_ENDPOINT = "http://localhost:8080/v1/graphql"
+const GRAPHQL_ENDPOINT = getHasuraEndpoint()
 const params = new URLSearchParams(window.location.search) // use the prev URL
 
 const section_id = params.get("sid")

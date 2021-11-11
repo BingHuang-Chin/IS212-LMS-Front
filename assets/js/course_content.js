@@ -1,4 +1,4 @@
-const GRAPHQL_ENDPOINT = "http://localhost:8080/v1/graphql"
+const GRAPHQL_ENDPOINT = getHasuraEndpoint()
 // $('#header').load("/common/navbar.html");
 const params = new URLSearchParams(window.location.search) // use the prev URL
 const course_id = params.get("id")
@@ -6,7 +6,7 @@ const course_id = params.get("id")
 
 async function viewCourseProgressBtn(){
     courseProgress = `
-    <a href="http://localhost:3000/pages/progress-bar?id=${course_id}" class="button">View Course Progress </a>
+    <a href="/pages/progress-bar?id=${course_id}" class="button">View Course Progress </a>
     `
     document.getElementById('progressBar').innerHTML += courseProgress
 }
@@ -82,7 +82,7 @@ async function getmaterials(){
                     week_dropdown += 
         
                     `<li>
-                            <a href="http://localhost:3000/pages/individual-chapter?mid=${individual_materials.course_link}&iid=${individual_materials.course_id}&sid=${sectionId}">${individual_materials.chapter_name}</a>        
+                            <a href="/pages/individual-chapter?mid=${individual_materials.course_link}&iid=${individual_materials.course_id}&sid=${sectionId}">${individual_materials.chapter_name}</a>        
                     </li>`   
                 }
      

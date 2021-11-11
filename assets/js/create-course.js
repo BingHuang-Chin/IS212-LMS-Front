@@ -2,7 +2,7 @@
 Fetch the values of the form submit and send it to hasura database using graphQL
 */
 // Example starter JavaScript for disabling form submissions if there are invalid fields
-const GRAPHQL_ENDPOINT = "http://localhost:8080/v1/graphql"
+const GRAPHQL_ENDPOINT = getHasuraEndpoint()
 
 
 async function createCourse() {

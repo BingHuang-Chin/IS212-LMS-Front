@@ -1,4 +1,4 @@
-const GRAPHQL_ENDPOINT = "http://localhost:8080/v1/graphql"
+const GRAPHQL_ENDPOINT = getHasuraEndpoint()
 const params = new URLSearchParams(window.location.search) // use the prev URL
 
 const course_id = params.get("cid")
@@ -7,7 +7,7 @@ const quizId = params.get("qid")
 async function exitButton(){
   
   toExit = `
-  <a href="http://localhost:3000/pages/course_content?id=${course_id}" class="button">Exit Quiz</a>
+  <a href="/pages/course_content?id=${course_id}" class="button">Exit Quiz</a>
   `
   document.getElementById('exitButton').innerHTML += toExit
 }

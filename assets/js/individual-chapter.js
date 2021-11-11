@@ -1,4 +1,4 @@
-const GRAPHQL_ENDPOINT = "http://localhost:8080/v1/graphql"
+const GRAPHQL_ENDPOINT = getHasuraEndpoint()
 const params = new URLSearchParams(window.location.search) // use the prev URL
 const single_material = params.get("mid") // course link
 
@@ -98,7 +98,7 @@ async function getmaterials(){
                     week_dropdown += 
         
                     `<li>
-                            <a href="http://localhost:3000/pages/individual-chapter?mid=${individual_materials.course_link}&iid=${individual_materials.course_id}&sid=${individual_materials.section_id}">${individual_materials.chapter_name}</a>        
+                            <a href="/pages/individual-chapter?mid=${individual_materials.course_link}&iid=${individual_materials.course_id}&sid=${individual_materials.section_id}">${individual_materials.chapter_name}</a>        
                     </li>`
                        
                 }
@@ -153,7 +153,7 @@ async function toQuizBtn(){
 
     to_quiz = 
     `
-    <a href="http://localhost:3000/pages/take-quiz?sid=${sid}&cid=${iid}&qid=${qid}">Start Quiz</a>        
+    <a href="/pages/take-quiz?sid=${sid}&cid=${iid}&qid=${qid}">Start Quiz</a>        
     `
     document.getElementById('quiz_time').innerHTML= to_quiz
 }

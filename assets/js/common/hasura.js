@@ -1,0 +1,1 @@
+const getHasuraEndpoint = () => window.location.hostname === "localhost" ? "http://localhost:8080/v1/graphql" : "https://coherent-dassie-25.hasura.app/v1/graphql"
