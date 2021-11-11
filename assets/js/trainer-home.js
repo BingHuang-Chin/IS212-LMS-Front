@@ -86,5 +86,8 @@ async function onRemoveQuiz (quizId) {
     title: 'Alert',
     text: 'The quiz has been successfully removed',
     icon: 'success'
+  }).then(result => {
+    if (result.isDismissed || result.isConfirmed)
+      location.reload()
   })
 }
