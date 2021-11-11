@@ -36,7 +36,7 @@ async function getmaterials(){
         body: JSON.stringify({
             query:`
             query {
-                course_materials(where: {course_id: {_eq: ${course_id}}}) {
+                course_materials(where: {course_id: {_eq: ${course_id}}}, order_by: {week: asc}) {
                   chapter_name
                   course_id
                   course_link

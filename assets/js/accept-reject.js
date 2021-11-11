@@ -50,7 +50,7 @@ async function getcourses(){
         <div class="col-lg-3 col-md-6 mb-4">
         <!-- Card-->
         <div class="card rounded shadow-sm border-0 h-100">
-        <div class="card-body p-4"><img src="https://bootstrapious.com/i/snippets/sn-cards/shoes-1_gthops.jpg" alt="" class="img-fluid d-block mx-auto mb-3">
+        <div class="card-body p-4"><img src="https://i.pinimg.com/originals/54/84/88/54848844b2124ba2b982df21dc10dd04.jpg" alt="" class="img-fluid d-block mx-auto mb-3">
             <h5> <a  href="http://localhost:3000/pages/course_content?id=${courses.id}" class="text-dark ">${courses.title}</a></h5>
             <p class="small text-muted font-italic">${courses.description}</p>
             <ul class="list-inline small">
